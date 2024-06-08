@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "paths": {
+    "/app/utils": {
+      "name": "/app/utils",
+      "lambdaFunction": "healthappaead6ad9",
+      "permissions": {
+        "setting": "open"
+      }
+    }
+  }
+}

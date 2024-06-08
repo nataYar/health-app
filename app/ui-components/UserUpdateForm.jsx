@@ -7,13 +7,14 @@
 /* eslint-disable */
 import * as React from "react";
 import { Button, Flex, Grid, TextField } from "@aws-amplify/ui-react";
-import { getOverrideProps } from "@aws-amplify/ui-react/internal";
-import { User } from "../models";
-import { fetchByPath, validateField } from "./utils";
-import { DataStore } from "aws-amplify";
+import { fetchByPath, getOverrideProps, validateField } from "./utils";
+import { generateClient } from "aws-amplify/api";
+import { getUser } from "../graphql/queries";
+import { updateUser } from "../graphql/mutations";
+const client = generateClient();
 export default function UserUpdateForm(props) {
   const {
-    id: idProp,
+    email: emailProp,
     user: userModelProp,
     onSuccess,
     onError,
@@ -24,9 +25,11 @@ export default function UserUpdateForm(props) {
     ...rest
   } = props;
   const initialValues = {
+    id: "",
     nickname: "",
     email: "",
   };
+  const [id, setId] = React.useState(initialValues.id);
   const [nickname, setNickname] = React.useState(initialValues.nickname);
   const [email, setEmail] = React.useState(initialValues.email);
   const [errors, setErrors] = React.useState({});
@@ -34,6 +37,7 @@ export default function UserUpdateForm(props) {
     const cleanValues = userRecord
       ? { ...initialValues, ...userRecord }
       : initialValues;
+    setId(cleanValues.id);
     setNickname(cleanValues.nickname);
     setEmail(cleanValues.email);
     setErrors({});
@@ -41,17 +45,23 @@ export default function UserUpdateForm(props) {
   const [userRecord, setUserRecord] = React.useState(userModelProp);
   React.useEffect(() => {
     const queryData = async () => {
-      const record = idProp
-        ? await DataStore.query(User, idProp)
+      const record = emailProp
+        ? (
+            await client.graphql({
+              query: getUser.replaceAll("__typename", ""),
+              variables: { email: emailProp },
+            })
+          )?.data?.getUser
         : userModelProp;
       setUserRecord(record);
     };
     queryData();
-  }, [idProp, userModelProp]);
+  }, [emailProp, userModelProp]);
   React.useEffect(resetStateValues, [userRecord]);
   const validations = {
+    id: [],
     nickname: [],
-    email: [],
+    email: [{ type: "Required" }],
   };
   const runValidationTasks = async (
     fieldName,
@@ -79,7 +89,8 @@ export default function UserUpdateForm(props) {
       onSubmit={async (event) => {
         event.preventDefault();
         let modelFields = {
-          nickname,
+          id: id ?? null,
+          nickname: nickname ?? null,
           email,
         };
         const validationResponses = await Promise.all(
@@ -110,23 +121,54 @@ export default function UserUpdateForm(props) {
               modelFields[key] = null;
             }
           });
-          await DataStore.save(
-            User.copyOf(userRecord, (updated) => {
-              Object.assign(updated, modelFields);
-            })
-          );
+          await client.graphql({
+            query: updateUser.replaceAll("__typename", ""),
+            variables: {
+              input: {
+                email: userRecord.email,
+                ...modelFields,
+              },
+            },
+          });
           if (onSuccess) {
             onSuccess(modelFields);
           }
         } catch (err) {
           if (onError) {
-            onError(modelFields, err.message);
+            const messages = err.errors.map((e) => e.message).join("\n");
+            onError(modelFields, messages);
           }
         }
       }}
       {...getOverrideProps(overrides, "UserUpdateForm")}
       {...rest}
     >
+      <TextField
+        label="Id"
+        isRequired={false}
+        isReadOnly={false}
+        value={id}
+        onChange={(e) => {
+          let { value } = e.target;
+          if (onChange) {
+            const modelFields = {
+              id: value,
+              nickname,
+              email,
+            };
+            const result = onChange(modelFields);
+            value = result?.id ?? value;
+          }
+          if (errors.id?.hasError) {
+            runValidationTasks("id", value);
+          }
+          setId(value);
+        }}
+        onBlur={() => runValidationTasks("id", id)}
+        errorMessage={errors.id?.errorMessage}
+        hasError={errors.id?.hasError}
+        {...getOverrideProps(overrides, "id")}
+      ></TextField>
       <TextField
         label="Nickname"
         isRequired={false}
@@ -136,6 +178,7 @@ export default function UserUpdateForm(props) {
           let { value } = e.target;
           if (onChange) {
             const modelFields = {
+              id,
               nickname: value,
               email,
             };
@@ -154,13 +197,14 @@ export default function UserUpdateForm(props) {
       ></TextField>
       <TextField
         label="Email"
-        isRequired={false}
-        isReadOnly={false}
+        isRequired={true}
+        isReadOnly={true}
         value={email}
         onChange={(e) => {
           let { value } = e.target;
           if (onChange) {
             const modelFields = {
+              id,
               nickname,
               email: value,
             };
@@ -188,7 +232,7 @@ export default function UserUpdateForm(props) {
             event.preventDefault();
             resetStateValues();
           }}
-          isDisabled={!(idProp || userModelProp)}
+          isDisabled={!(emailProp || userModelProp)}
           {...getOverrideProps(overrides, "ResetButton")}
         ></Button>
         <Flex
@@ -200,7 +244,7 @@ export default function UserUpdateForm(props) {
             type="submit"
             variation="primary"
             isDisabled={
-              !(idProp || userModelProp) ||
+              !(emailProp || userModelProp) ||
               Object.values(errors).some((e) => e?.hasError)
             }
             {...getOverrideProps(overrides, "SubmitButton")}

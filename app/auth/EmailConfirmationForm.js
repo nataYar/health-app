@@ -1,11 +1,12 @@
 "use client";
 import { useState, useContext, useEffect } from "react";
 import { UserContext } from "../context/userProvider";
-import { Auth } from "aws-amplify";
+// import { Auth } from "aws-amplify";
 import { useRouter } from "next/navigation";
 import { Button, Paper, Box, Typography, TextField } from "@mui/material";
 import { createUserFn } from "../utils/userFn";
 import { Hub } from 'aws-amplify';
+import { confirmSignUp } from 'aws-amplify/auth';
 
 function EmailConfirmationForm({ nickname, email }) {
   const { myUser, updateUser } = useContext(UserContext);
@@ -19,15 +20,20 @@ function EmailConfirmationForm({ nickname, email }) {
   const handleConfirmationSubmit = async (event) => {
     event.preventDefault();
     try {
-      const data = await Auth.confirmSignUp(email, confirmationCode);
-      console.log(data)
+      await confirmSignUp({
+        username: email.trim(),
+        confirmationCode: confirmationCode.trim()
+      });
+      
       const newUser = await createUserFn(nickname, email); 
+
       listenToAutoSignInEvent(newUser)
     } catch (error) {
       console.log(error);
     }
   };
   
+
 
   function listenToAutoSignInEvent(newUser) {
     Hub.listen('auth', ({ payload }) => {

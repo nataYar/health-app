@@ -1,0 +1,32 @@
+type Log @model @auth(rules: [{allow: public}]) {
+  id: ID
+  userID: ID! @index(name: "byUser")
+  date: AWSDate
+  calories: Int
+  protein: Float
+  carbs: Float
+  fats: Float
+  caloriesGoal: Int
+  weightGoal: Float
+  weight: String
+}
+
+type Exercise @model @auth(rules: [{allow: public}]) {
+  id: ID
+  userID: ID! @index(name: "byUser")
+  exercise: String
+  duration: Int
+  date: AWSDate
+}
+
+type User @model @auth(rules: [{allow: public}]) {
+  id: ID
+  nickname: String
+  email: String! @primaryKey
+  Exercises: [Exercise] @hasMany(indexName: "byUser", fields: ["id"])
+  Logs: [Log] @hasMany(indexName: "byUser", fields: ["id"])
+}
+
+
+ 
+ 

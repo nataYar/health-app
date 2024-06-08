@@ -1,5 +1,5 @@
 "use client";
-import { useState, useContext, useEffect } from "react";
+import { useState, useContext } from "react";
 import { useRouter } from "next/navigation";
 import { UserContext } from "../context/userProvider";
 import { TextField, Button } from "@mui/material";
@@ -7,8 +7,10 @@ import { TextField, Button } from "@mui/material";
 import { Card, Paper } from "@mui/material";
 import EmailConfirmationForm from "./EmailConfirmationForm";
 import PopupModal from "../../components/PopupModal";
-import { Auth } from "aws-amplify";
-import { getUserFn, createUserFn } from "../utils/userFn";
+// import { Auth } from "aws-amplify";
+import { signUp } from "aws-amplify/auth"
+
+import { getUserByEmail } from "../utils/userFn";
 // import { DataStore } from "@aws-amplify/datastore";
 // import awsmobile from "../aws-exports";
 // Auth.configure(awsmobile);
@@ -30,14 +32,6 @@ function AuthContainer() {
     setIsModalOpen(false);
   };
 
-  // useEffect(() => {
-  //   const fn = async () => { 
-  //     await DataStore.clear()
-  //     await getUserFn('n')
-  //   }
-  //   fn()
-  // }, [])
-
   const handleSignUp = async () => {
     // Check if all required fields are filled
     if (!userEmail || !password || !confirmPassword || !nickname) {
@@ -50,24 +44,26 @@ function AuthContainer() {
       return;
     }
     try {
-      const findUser = await getUserFn(userEmail)
+      const findUser = await getUserByEmail(userEmail)
       console.log(findUser)
       if(findUser){
         console.log('user exists')
         alert('user exists')
       } else {
-        const { user } = await Auth.signUp({
-          username: userEmail,
-          password,
-          attributes: {
-            email: userEmail,
-            nickname: nickname,
-          },
-          autoVerifyEmail: true,
-          autoSignIn: {
-            enabled: true,
-          },
-        });
+        console.log("user not found. register")
+
+        const { user } = await signUp({
+      username: userEmail,
+      password: password.trim(),
+      options: {
+        userAttributes: {
+          email: userEmail,
+          nickname
+        },
+        // optional
+        autoSignIn: true // or SignInOptions e.g { authFlowType: "USER_SRP_AUTH" }
+      }
+    })
         setRequiresEmailConfirmation(true);
         setEmail(user.username);
       }
@@ -86,7 +82,7 @@ function AuthContainer() {
       console.log(registeredUser)
 
       const { email, nickname, id } = registeredUser;
-      
+      console.log(email, nickname, id)
     //  await createUser('nickname', 'wtf@gmail.com')  ;
       
       updateUser({
