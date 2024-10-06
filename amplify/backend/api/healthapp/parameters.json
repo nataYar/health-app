@@ -1,6 +1,0 @@
-{
-  "AppSyncApiName": "healthapp",
-  "DynamoDBBillingMode": "PAY_PER_REQUEST",
-  "DynamoDBEnableServerSideEncryption": false,
-  "AuthModeLastUpdated": "2024-06-07T22:45:14.488Z"
-}

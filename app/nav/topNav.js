@@ -32,7 +32,10 @@ const TopNav = ({ drawerWidth, handleDrawerToggle }) => {
     color: '#fff',
   };
 
-  const initials = myUser && myUser.nickname  ? myUser.nickname[0].toUpperCase() : <Avatar sx={{ height:"48px", width:"48px"}}/>;
+  const initials = myUser.id ? 
+  myUser.email[0].toUpperCase() 
+  // myUser.email
+  : <Avatar sx={{ height:"48px", width:"48px"}}/>;
 
   return (
     <AppBar
@@ -74,12 +77,12 @@ const TopNav = ({ drawerWidth, handleDrawerToggle }) => {
           <MenuIcon />
         </IconButton>
 
-        { myUser.email == 'n.yarysheva@gmail.com' ? <GuestButton/> : null}
-        { myUser.email.length > 0 ? <SignOutButton text="Sign out"/> : <SignOutButton text="Log in"/> }
+        {/* { myUser.email == 'n.yarysheva@gmail.com' ? <GuestButton/> : null} */}
+        { myUser.email.length > 0 ? <SignOutButton text="Sign out"/> : <SignOutButton text="Sign up | Log in"/> }
         
 
         <Box sx={{ flexGrow: 0 }}>
-          <Tooltip title={myUser.nickname}>
+          <Tooltip title={myUser.email}>
             <IconButton sx={buttonStyles}>
               <Typography variant="h2" sx={typographyStyles}>
                 {initials}

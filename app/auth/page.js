@@ -2,99 +2,57 @@
 import { useState, useContext } from "react";
 import { useRouter } from "next/navigation";
 import { UserContext } from "../context/userProvider";
-import { TextField, Button } from "@mui/material";
 
-import { Card, Paper } from "@mui/material";
-import EmailConfirmationForm from "./EmailConfirmationForm";
+import { TextField, Button, Card, Paper, Box, Typography } from "@mui/material";
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
+import {auth} from '../firebase';
 import PopupModal from "../../components/PopupModal";
-// import { Auth } from "aws-amplify";
-import { signUp } from "aws-amplify/auth"
-
-import { getUserByEmail } from "../utils/userFn";
-// import { DataStore } from "@aws-amplify/datastore";
-// import awsmobile from "../aws-exports";
-// Auth.configure(awsmobile);
 
 function AuthContainer() {
   const { updateUser } = useContext(UserContext);
   const [isModalOpen, setIsModalOpen] = useState(false);
-
   const [userEmail, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [nickname, setNickname] = useState("");
-  const [isSignUp, setIsSignUp] = useState(false);
-  const [requiresEmailConfirmation, setRequiresEmailConfirmation] =
-    useState(false);
+  const [isSignUp, setIsSignUp] = useState(true);
   const router = useRouter();
 
   const handleCloseModal = () => {
     setIsModalOpen(false);
   };
 
-  const handleSignUp = async () => {
-    // Check if all required fields are filled
-    if (!userEmail || !password || !confirmPassword || !nickname) {
-      console.log("Please fill in all required fields");
-      return;
-    }
-    // Check if the password matches the confirmed password
-    if (password !== confirmPassword) {
-      console.log("Passwords do not match");
-      return;
-    }
-    try {
-      const findUser = await getUserByEmail(userEmail)
-      console.log(findUser)
-      if(findUser){
-        console.log('user exists')
-        alert('user exists')
-      } else {
-        console.log("user not found. register")
 
-        const { user } = await signUp({
-      username: userEmail,
-      password: password.trim(),
-      options: {
-        userAttributes: {
-          email: userEmail,
-          nickname
-        },
-        // optional
-        autoSignIn: true // or SignInOptions e.g { authFlowType: "USER_SRP_AUTH" }
-      }
-    })
-        setRequiresEmailConfirmation(true);
-        setEmail(user.username);
-      }
-    } catch (error) {
-      console.log("error signing up:", error);
+  const handleSignUp = async () => {
+    try {
+        const res = await createUserWithEmailAndPassword(auth, userEmail, password)
+        // sessionStorage.setItem('user', true)
+        updateUser({
+              email: res.user.email, 
+              id: res.user.uid
+            });
+        setEmail('');
+        setPassword('')
+        return router.push("./dashboard")
+    } catch(e){
+        console.error(e)
+        setIsModalOpen(true)
     }
   };
 
   const handleSignIn = async () => {
-    try {
-      console.log(userEmail, password);
-      const user = await Auth.signIn(userEmail, password);
-      console.log(user)
-
-      const registeredUser = await getUserFn(user.attributes.email)
-      console.log(registeredUser)
-
-      const { email, nickname, id } = registeredUser;
-      console.log(email, nickname, id)
-    //  await createUser('nickname', 'wtf@gmail.com')  ;
-      
+    try{
+      const res = await signInWithEmailAndPassword(auth, userEmail, password)
+      // sessionStorage.setItem('user', true)
       updateUser({
-        id: id,
-        nickname: nickname,
-        email: email,
-      });
-      router.push("./dashboard");
-    } 
-    catch (error) {
-      setIsModalOpen(true);
-      console.log("error signing in ", error);
+            email: res.user.email, 
+            id: res.user.uid
+          });
+      setEmail('');
+      setPassword('')
+      return router.push("./dashboard")
+    }
+    catch (e){
+      console.log(e)
+      setIsModalOpen(true)
     }
   };
 
@@ -107,88 +65,63 @@ function AuthContainer() {
     }
   };
 
+
+
   return (
     <Card
       component={Paper}
       sx={{ p: "12px", width: { xs: "100%", md: "280px" } }}
     >
-      {requiresEmailConfirmation ? (
-        <EmailConfirmationForm email={userEmail} nickname={nickname} />
-      ) : (
-        <form
-          onSubmit={handleSubmit}
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
+        <Typography variant="h4" align="center" gutterBottom>
+        {isSignUp ? "Sign Up" : "Sign In"}
+      </Typography>
+      <Box
+        component="form"
+        onSubmit={handleSubmit}
+        sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}
+      >
+        <TextField
+          label="Email"
+          variant="outlined"
+          type="email"
+          value={userEmail}
+          onChange={(e) => setEmail(e.target.value)}
+          fullWidth
+        />
+        <TextField
+          label="Password"
+          variant="outlined"
+          type="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          fullWidth
+        />
+        <Button
+          type="submit"
+          variant="contained"
+          color="primary"
+          fullWidth
+          sx={{ mt: 2 }}
         >
-          <TextField
-            label="Email"
-            type="userEmail"
-            value={userEmail}
-            onChange={(e) => setEmail(e.target.value)}
-            sx={{
-              backgroundColor: "white",
-              height: "auto",
-              pb: "15px",
-            }}
-          />
+          {isSignUp ? "Sign Up" : "Sign In"}
+        </Button>
+      </Box>
 
-          <TextField
-            label="Password"
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            sx={{
-              backgroundColor: "white",
-              height: "auto",
-              pb: "15px",
-            }}
-          />
-
-          {isSignUp && (
-            <>
-              <TextField
-                label="Confirm Password"
-                type="password"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                sx={{
-                  backgroundColor: "white",
-                  height: "auto",
-                  pb: "15px",
-                }}
-              />
-
-              <TextField
-                label="Nickname"
-                value={nickname}
-                onChange={(e) => setNickname(e.target.value)}
-                sx={{
-                  backgroundColor: "white",
-                  height: "auto",
-                  pb: "15px",
-                }}
-              />
-            </>
-          )}
-          <Button variant="contained" type="submit">
-            {isSignUp ? "Sign Up" : "Sign In"}
-          </Button>
-          <Button variant="text" onClick={() => setIsSignUp(!isSignUp)}>
-            {isSignUp ? "Sign In instead" : "Create an account"}
-          </Button>
-        </form>
-      )}
+      <Box sx={{ textAlign: 'center', mt: 2 }}>
+        <Button
+          variant="text"
+          onClick={() => setIsSignUp(!isSignUp)}
+        >
+          {isSignUp ? "Already have an account? Sign In" : "Don't have an account? Sign Up"}
+        </Button>
+      </Box>
       <PopupModal
-        text="User is not confirmed"
+        text="Please check credentials"
         open={isModalOpen}
         onClose={handleCloseModal}
       />
-    </Card>
-  );
+      </Card>
+  ) 
 }
 
 export default AuthContainer;

@@ -1,13 +1,10 @@
 'use client'
-
 import { createContext, useState, useEffect } from 'react';
 // import { DataStore } from "@aws-amplify/datastore";
-import { getUserByEmail  } from '../utils/userFn'
+// import { getUserByEmail  } from '../utils/userFn'
 
-import { API, graphqlOperation } from 'aws-amplify';
-import { listExercises } from '../graphql/queries';
-import { onCreateExercise, onUpdateExercise, onDeleteExercise } from '../graphql/subscriptions';
-
+// import { listExercises } from '../graphql/queries';
+// import { onCreateExercise, onUpdateExercise, onDeleteExercise } from '../graphql/subscriptions';
 
 // Create the user context
 const UserContext = createContext();
@@ -16,7 +13,6 @@ const UserContext = createContext();
 const UserProvider = ({ children }) => {
   const [myUser, setMyUser] = useState({
     id: '', 
-    nickname: '',
     email: '',
     Logs: [],
   });
@@ -33,24 +29,24 @@ const UserProvider = ({ children }) => {
   }, [myUser]);
 
   // set the user as test User
-  useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const user = await getUserByEmail("n.yarysheva@gmail.com");
-        console.log(user)
-        updateUser({
-          id: user.id, 
-          nickname: user.nickname,
-          email: user.email,
-        });
-        return user;
-      } catch (error) {
-        console.error("Error fetching user:", error);
-      }
-    };
+  // useEffect(() => {
+  //   const fetchUser = async () => {
+  //     try {
+  //       // const user = await getUserByEmail("n.yarysheva@gmail.com");
+  //       console.log(user)
+  //       updateUser({
+  //         id: user.id, 
+  //         nickname: user.nickname,
+  //         email: user.email,
+  //       });
+  //       return user;
+  //     } catch (error) {
+  //       console.error("Error fetching user:", error);
+  //     }
+  //   };
 
-    fetchUser();
-  }, []);
+  //   fetchUser();
+  // }, []);
 
   useEffect(() => {
     const lastLoggedWeightGoal = () => {
@@ -100,67 +96,65 @@ const UserProvider = ({ children }) => {
 
 
   // keep user Exercises updated
-  useEffect(() => {
-    if (myUser.id.length > 0) {
-      // Function to fetch initial data
-      const fetchExercises = async () => {
-        try {
-          const result = await API.graphql(graphqlOperation(listExercises, {
-            filter: { userID: { eq: myUser.id } }
-          }));
-          const items = result.data.listExercises.items;
+  // useEffect(() => {
+  //   if (myUser.id.length > 0) {
+  //     // Function to fetch initial data
+  //     const fetchExercises = async () => {
+  //       try {
+  //         const result = await API.graphql(graphqlOperation(listExercises, {
+  //           filter: { userID: { eq: myUser.id } }
+  //         }));
+  //         const items = result.data.listExercises.items;
   
-          // Convert the date strings to Date objects for correct sorting
-          const sortedItems = items.sort((a, b) => new Date(a.date) - new Date(b.date));
-          setUserExercises(sortedItems);
-        } catch (error) {
-          console.error('Error fetching exercises:', error);
-        }
-      };
+  //         // Convert the date strings to Date objects for correct sorting
+  //         const sortedItems = items.sort((a, b) => new Date(a.date) - new Date(b.date));
+  //         setUserExercises(sortedItems);
+  //       } catch (error) {
+  //         console.error('Error fetching exercises:', error);
+  //       }
+  //     };
   
-      fetchExercises();
+  //     fetchExercises();
   
-      // Subscriptions to listen for real-time updates
-      const createSubscription = API.graphql(
-        graphqlOperation(onCreateExercise, { userID: myUser.id })
-      ).subscribe({
-        next: ({ value }) => {
-          const newExercise = value.data.onCreateExercise;
-          setUserExercises(prevExercises => [...prevExercises, newExercise].sort((a, b) => new Date(a.date) - new Date(b.date)));
-        }
-      });
+  //     // Subscriptions to listen for real-time updates
+  //     const createSubscription = API.graphql(
+  //       graphqlOperation(onCreateExercise, { userID: myUser.id })
+  //     ).subscribe({
+  //       next: ({ value }) => {
+  //         const newExercise = value.data.onCreateExercise;
+  //         setUserExercises(prevExercises => [...prevExercises, newExercise].sort((a, b) => new Date(a.date) - new Date(b.date)));
+  //       }
+  //     });
   
-      const updateSubscription = API.graphql(
-        graphqlOperation(onUpdateExercise, { userID: myUser.id })
-      ).subscribe({
-        next: ({ value }) => {
-          const updatedExercise = value.data.onUpdateExercise;
-          setUserExercises(prevExercises => {
-            const updatedExercises = prevExercises.map(exercise => exercise.id === updatedExercise.id ? updatedExercise : exercise);
-            return updatedExercises.sort((a, b) => new Date(a.date) - new Date(b.date));
-          });
-        }
-      });
+  //     const updateSubscription = API.graphql(
+  //       graphqlOperation(onUpdateExercise, { userID: myUser.id })
+  //     ).subscribe({
+  //       next: ({ value }) => {
+  //         const updatedExercise = value.data.onUpdateExercise;
+  //         setUserExercises(prevExercises => {
+  //           const updatedExercises = prevExercises.map(exercise => exercise.id === updatedExercise.id ? updatedExercise : exercise);
+  //           return updatedExercises.sort((a, b) => new Date(a.date) - new Date(b.date));
+  //         });
+  //       }
+  //     });
   
-      const deleteSubscription = API.graphql(
-        graphqlOperation(onDeleteExercise, { userID: myUser.id })
-      ).subscribe({
-        next: ({ value }) => {
-          const deletedExercise = value.data.onDeleteExercise;
-          setUserExercises(prevExercises => prevExercises.filter(exercise => exercise.id !== deletedExercise.id));
-        }
-      });
+  //     const deleteSubscription = API.graphql(
+  //       graphqlOperation(onDeleteExercise, { userID: myUser.id })
+  //     ).subscribe({
+  //       next: ({ value }) => {
+  //         const deletedExercise = value.data.onDeleteExercise;
+  //         setUserExercises(prevExercises => prevExercises.filter(exercise => exercise.id !== deletedExercise.id));
+  //       }
+  //     });
   
-      // Cleanup subscriptions on unmount
-      return () => {
-        createSubscription.unsubscribe();
-        updateSubscription.unsubscribe();
-        deleteSubscription.unsubscribe();
-      };
-    }
-  }, [myUser]);
-
-  
+  //     // Cleanup subscriptions on unmount
+  //     return () => {
+  //       createSubscription.unsubscribe();
+  //       updateSubscription.unsubscribe();
+  //       deleteSubscription.unsubscribe();
+  //     };
+  //   }
+  // }, [myUser]);
 
   // useEffect(() => {
   //   if(myUser.id.length > 0) {

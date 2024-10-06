@@ -8,9 +8,9 @@ const RouteOnLoad = () => {
   const router = useRouter();
 
   useEffect(() => {
-    if (myUser !== null) {
+    // if (myUser !== null) {
       router.push('/dashboard');
-    } 
+    // } 
   }, []);
 
   return (

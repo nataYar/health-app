@@ -1,34 +1,33 @@
-import { getUser } from '../graphql/queries';
-import { generateClient } from "aws-amplify/api";
-import { createUser} from '../graphql/mutations';
+// import { getUser } from '../graphql/queries';
+// import { createUser} from '../graphql/mutations';
 import Exercises from '../fitness/exercises/Exercises';
-const client = generateClient()
 
-export const createUserFn = async (nickname, email) => {
-  try {
-    console.log(nickname, email)
-    const newUser = await client.graphql({
-      query: createUser,
-      variables: {
-          input: {
-      "nickname": nickname,
-      "email": email,
-    }
-      }
-  });
-    console.log(newUser);
-    const res = {
-      email: newUser.data.createUser.email,
-      id: newUser.data.createUser.id,
-      nickname: newUser.data.createUser.nickname
-    }
-    console.log(res)
-    return res;
 
-  } catch (error) {
-    console.log("Error creating new user:", error);
-  }
-};
+// export const createUserFn = async (nickname, email) => {
+//   try {
+//     console.log(nickname, email)
+//     const newUser = await client.graphql({
+//       query: createUser,
+//       variables: {
+//           input: {
+//       "nickname": nickname,
+//       "email": email,
+//     }
+//       }
+//   });
+//     console.log(newUser);
+//     const res = {
+//       email: newUser.data.createUser.email,
+//       id: newUser.data.createUser.id,
+//       nickname: newUser.data.createUser.nickname
+//     }
+//     console.log(res)
+//     return res;
+
+//   } catch (error) {
+//     console.log("Error creating new user:", error);
+//   }
+// };
 
 
 // export const getUserByEmailFn = async (email) => {
@@ -62,13 +61,14 @@ export const createUserFn = async (nickname, email) => {
 export const getUserByEmail = async (email) => {
   try {
     // Get a specific item
-    const oneUser = await client.graphql({
-      query: getUser,
-      variables: { email: email }
-    });
-    console.log(email)
-    console.log(oneUser.data.getUser)
-    return oneUser.data.getUser;
+    console.log("from getUserByEmail")
+    // const oneUser = await client.graphql({
+    //   query: getUser,
+    //   variables: { email: email }
+    // });
+    // console.log(email)
+    // console.log(oneUser.data.getUser)
+    // return oneUser.data.getUser;
   } catch (error) {
     console.log("Error fetching user by email:", error);
   }

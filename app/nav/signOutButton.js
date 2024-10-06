@@ -2,23 +2,23 @@
 
 import { Box, ButtonBase} from "@mui/material";
 import { useRouter } from "next/navigation";
-import { Auth } from "aws-amplify";
+import { signOut } from "firebase/auth";
+import { auth } from "../firebase";
 
 const SignOutButton = ({ text }) => {
   const router = useRouter();
 
-  async function signOut() {
-    try {
-      await Auth.signOut();
-      router.push("/auth") 
-    } catch (error) {
-      console.log('error signing out: ', error);
-    }
+  async function signUserOut() {
+      signOut(auth).then(() => {
+        router.push("/auth") 
+      }).catch((error) => {
+        console.log(error)
+      });
   }
 
   return (
     <ButtonBase
-      onClick={signOut}
+      onClick={signUserOut}
       sx={{
         justifySelf: "right",
         alignItems: "center",

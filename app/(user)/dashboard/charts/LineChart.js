@@ -26,9 +26,9 @@ const LineChart = ({ logs, currentDate }) => {
   let labelArray ;
   let weightArray;
 
-  useEffect(() =>{
-    console.log(minWeight)
-  }, [minWeight])
+  // useEffect(() =>{
+  //   console.log(minWeight)
+  // }, [minWeight])
 
   useEffect(() => {
     if(logs){
