@@ -2,14 +2,23 @@
 
 import { Box, ButtonBase} from "@mui/material";
 import { useRouter } from "next/navigation";
+import { useContext } from "react";
+import { UserContext } from "../context/userProvider";
+
 import { signOut } from "firebase/auth";
 import { auth } from "../firebase";
 
 const SignOutButton = ({ text }) => {
+  const { myUser, updateUser } = useContext(UserContext);
   const router = useRouter();
 
   async function signUserOut() {
       signOut(auth).then(() => {
+        updateUser({
+          email: "",
+          id: "",
+          nickname: ""
+      });
         router.push("/auth") 
       }).catch((error) => {
         console.log(error)

@@ -32,8 +32,8 @@ const TopNav = ({ drawerWidth, handleDrawerToggle }) => {
     color: '#fff',
   };
 
-  const initials = myUser.id ? 
-  myUser.email[0].toUpperCase() 
+  const initials = myUser.email ? 
+  myUser.nickname[0].toUpperCase() 
   // myUser.email
   : <Avatar sx={{ height:"48px", width:"48px"}}/>;
 
@@ -82,7 +82,7 @@ const TopNav = ({ drawerWidth, handleDrawerToggle }) => {
         
 
         <Box sx={{ flexGrow: 0 }}>
-          <Tooltip title={myUser.email}>
+          <Tooltip title={myUser.nickname}>
             <IconButton sx={buttonStyles}>
               <Typography variant="h2" sx={typographyStyles}>
                 {initials}

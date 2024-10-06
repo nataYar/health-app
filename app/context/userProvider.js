@@ -14,6 +14,7 @@ const UserProvider = ({ children }) => {
   const [myUser, setMyUser] = useState({
     id: '', 
     email: '',
+    nickname: '',
     Logs: [],
   });
   const [userLogs, setUserLogs] = useState([])
