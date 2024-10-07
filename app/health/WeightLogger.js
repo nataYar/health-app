@@ -7,25 +7,38 @@ import { Stack, TextField, Button, Typography } from "@mui/material";
 import PopupModal from "../../components/PopupModal";
 import dayjs from "dayjs";
 import { saveLogFieldFn } from "../utils/userFn";
+import { Timestamp } from "firebase/firestore";
 
 
 const WeightLogger = () => {
-  const { myUser } = useContext(UserContext);
+  const { myUser, currentDate } = useContext(UserContext);
   const [weightEntry, setWeightEntry] = useState({
     weight: null,
-    date: "",
+    date: null,
   });
+  const [modalText, setModalText] = useState("Weight logged!"); 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedDate, setSelectedDate] = useState(dayjs());
 
   useEffect(() => {
-    selectedDate
-      ? setWeightEntry((prevEntry) => ({
-          ...prevEntry,
-          date: selectedDate.format("YYYY-MM-DD"),
-        }))
-      : null;
-  }, [selectedDate]);
+    if (selectedDate) {
+      console.log(selectedDate.toDate())
+      // Check if the selected date is in the future
+      if (selectedDate.isAfter(currentDate, 'day')) {
+        setModalText("Please select a date that is today or in the past.");
+        setIsModalOpen(true)
+        setSelectedDate(dayjs()); // Optionally reset to today's date
+        return; // Exit the effect if the date is invalid
+      }
+
+      // Set weight entry date if the selected date is valid
+      setWeightEntry((prevEntry) => ({
+        ...prevEntry,
+        date: selectedDate.toDate(),
+      }));
+   
+    }
+  }, [selectedDate, currentDate]); 
 
   const handleCloseModal = () => {
     setIsModalOpen(false);
@@ -41,20 +54,22 @@ const WeightLogger = () => {
 
   const passWeightData = async () => {
     saveLogFieldFn(myUser.id, weightEntry.date, 'weight', weightEntry.weight) 
+    setModalText("Weight logged!")
     setIsModalOpen(true);
     setSelectedDate(null)
     setWeightEntry({
       weight: "",
-      date: "",
+      date: null,
     });
   };
 
   const handleSubmit = (event) => {
     event.preventDefault();
-
-    weightEntry.weight !==  null  && weightEntry.date
+    weightEntry.weight !==  null  && weightEntry.date && myUser.id
       ? passWeightData()
-      : alert("Please log weight and date");
+      : 
+      setModalText("Sign in or log date / weight");
+      setIsModalOpen(true)
   };
 
   return (
@@ -76,7 +91,7 @@ const WeightLogger = () => {
           textAlign: "center",
         }}
       >
-        Weight Logger
+        Log your weight here
       </Typography>
       <form
         onSubmit={handleSubmit}
@@ -114,7 +129,7 @@ const WeightLogger = () => {
         </Button>
       </form>
       <PopupModal
-        text="Weight logged!"
+        text={modalText}
         open={isModalOpen}
         onClose={handleCloseModal}
       />

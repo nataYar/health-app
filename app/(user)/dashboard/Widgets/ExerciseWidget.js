@@ -1,5 +1,5 @@
 "use client";
-import { Card, Typography, Avatar, Grid, Divider } from "@mui/material";
+import { Card, Typography, Avatar, Grid2, Divider } from "@mui/material";
 import FitnessCenterIcon from "@mui/icons-material/FitnessCenter";
 import { neutral } from "@/app/theme/colors";
 import dayjs from "dayjs";
@@ -9,9 +9,9 @@ const ExerciseWidget = ({ exercisesDuration }) => {
 
   return (
     <Card
-      sx={{ p: "12px", height: "155px", width: { xs: "100%", md: "280px" } }}
+      sx={{ p: "12px",  width: { xs: "100%", md: "30%" } }}
     >
-      <Grid
+      <Grid2
         container
         direction="row"
         justifyContent="space-between"
@@ -19,7 +19,7 @@ const ExerciseWidget = ({ exercisesDuration }) => {
         width="100%"
       >
 
-        <Grid item display='flex' alignItems="baseline">
+        <Grid2 item display='flex' alignItems="baseline">
           <Typography
             sx={{
               fontSize: "2.125rem",
@@ -27,14 +27,14 @@ const ExerciseWidget = ({ exercisesDuration }) => {
               mr: 1,
             }}
           >
-            {duration}
+            {duration }
             <span
               style={{
                 fontSize: "14px",
                 color: neutral[500],
               }}
             >
-               {duration ? " min" : null}
+               {duration ? " min" : "No exercises logged"}
 
             </span>
           </Typography>
@@ -49,8 +49,8 @@ const ExerciseWidget = ({ exercisesDuration }) => {
             </Typography>
             ) : null
           }
-        </Grid>
-        <Grid item>
+        </Grid2>
+        <Grid2 item>
           <Avatar
             variant="rounded"
             sx={{
@@ -64,12 +64,12 @@ const ExerciseWidget = ({ exercisesDuration }) => {
           >
             <FitnessCenterIcon sx={{ height: "30px", width: " 30px" }} />
           </Avatar>
-        </Grid>
-      </Grid>
+        </Grid2>
+      </Grid2>
 
-      <Grid container direction="column">
-        <Grid item sx={{ mb: 1.25 }}>
-          <Grid container justifyContent="space-between" width="100%">
+      <Grid2 container direction="column">
+        <Grid2 item sx={{ mb: 1.25 }}>
+          <Grid2 container justifyContent="space-between" width="100%">
             <Typography
               variant="body2"
               sx={{
@@ -78,11 +78,12 @@ const ExerciseWidget = ({ exercisesDuration }) => {
                 mb: 0.75,
               }}
             >
-              Daily exercises
+              {duration ? "" : ""}
+              
             </Typography>
-          </Grid>
-        </Grid>
-        <Grid item sx={{ mb: 1.25 }}>
+          </Grid2>
+        </Grid2>
+        <Grid2 item sx={{ mb: 1.25 }}>
         <Divider />
           <Typography
             variant="body2"
@@ -92,12 +93,12 @@ const ExerciseWidget = ({ exercisesDuration }) => {
             }}
           >
             <span style={{ fontSize: "16px", color: "#6366F1" }}>
-              {average} min{" "}
+              {average ? `${average} min in average` : null}
             </span>{" "}
-            - average time
+            {/* - average time */}
           </Typography>
-        </Grid>
-      </Grid>
+        </Grid2>
+      </Grid2>
     </Card>
   );
 };

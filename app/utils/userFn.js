@@ -1,7 +1,7 @@
-// import { getUser } from '../graphql/queries';
-// import { createUser} from '../graphql/mutations';
+import { db } from "../firebase";
+import { doc, collection, getDocs, setDoc, Timestamp, onSnapshot  } from "firebase/firestore"; 
 import Exercises from '../fitness/exercises/Exercises';
-
+import dayjs from "dayjs";
 
 // export const createUserFn = async (nickname, email) => {
 //   try {
@@ -86,35 +86,52 @@ export const getUserByEmail = async (email) => {
 //     console.log(error);
 //   }
 // };
+export const saveLogFieldFn = async (userId, date, field, value) => {
+  try {
+    const userDocRef = doc(db, "users", userId);
+    const logsRef = collection(userDocRef, "Logs");
+    
+    // Query to check if a log with the same date already exists
+    const logsSnapshot = await getDocs(logsRef);
+    let logIdToUpdate = null;
+    
+    // Convert the Firestore Timestamp to a JavaScript Date
+    const inputDate = date
+    console.log(inputDate)
+    inputDate.setHours(0, 0, 0, 0); // Set time to midnight for comparison
 
-// export const saveLogFieldFn = async (userId, date, field, value) => {
-//   try {
-//     const logsByDate = await DataStore.query(Log, (log) => log.date.eq(date));
-//     // check if the Log exists
-//     const logByUser = logsByDate.filter((log) => log.userID === userId);
+    logsSnapshot.forEach((doc) => {
+      const logData = doc.data();
+      const logDate = logData.date.toDate(); // Assuming date is stored as a Firestore Timestamp
+      logDate.setHours(0, 0, 0, 0); // Set time to midnight for comparison
+      console.log(logDate.setHours(0, 0, 0, 0))
 
-//     if (logByUser.length > 0) {
-//       // if exists, update the field
-//       await DataStore.save(
-//         Log.copyOf(logByUser[0], (updated) => {
-//           updated[field] = value;
-//         })
-//       );
-//     } else {
-//       // if doesn't exist, create the Log
-//       await DataStore.save(
-//         new Log({
-//           date: date,
-//           [field]: value,
-//           userID: userId,
-//         })
-//       );
-//     }
-//   } catch (error) {
-//     console.log("Error saving new user:", error);
-//     console.log(error);
-//   }
-// };
+      // Check if the log date matches the input date
+      if (logDate.getTime() === inputDate.getTime()) {
+        logIdToUpdate = doc.id; // Store the ID of the log to update
+      }
+    });
+
+    if (logIdToUpdate) {
+      // Log entry exists; update the specific field
+      const logDocRef = doc(logsRef, logIdToUpdate);
+      await setDoc(logDocRef, { [field]: value }, { merge: true });
+      console.log(`Updated field ${field} in log ${logIdToUpdate}`);
+    } else {
+      // Log entry doesn't exist; create a new one
+      const newLogRef = doc(logsRef); // Create a new log reference
+      const newLogData = {
+        date: date, // Save the date as a Timestamp
+        [field]: value,
+      };
+      await setDoc(newLogRef, newLogData);
+      console.log(`Created new log for date ${date}`);
+    }
+  } catch (error) {
+    console.error("Error saving/updating log field:", error);
+  }
+};
+
 
 // export const saveLogFn = async (
 //   userId,
@@ -199,9 +216,9 @@ export const getUserByEmail = async (email) => {
 //   DataStore.delete(modelToDelete);
 // };
 
-// export const saveGoals = async (userId, caloriesGoal, weightGoal, date) => {
-//   try {
-//     console.log(userId, caloriesGoal, weightGoal, date)
+export const saveGoal = async (userId, caloriesGoal, weightGoal, date) => {
+  try {
+    console.log(userId, caloriesGoal, weightGoal, date)
 //     const logs = await DataStore.query(Log, (log) => log.userID.eq(userId));
 //     console.log(logs)
 //     const lastLog = logs[logs.length - 1];
@@ -226,8 +243,8 @@ export const getUserByEmail = async (email) => {
 //         })
 //       );
 //     }
-//   } catch (error) {
-//     console.log("Error saving new user:", error);
-//     console.log(error);
-//   }
-// };
+  } catch (error) {
+    console.log("Error saving new user:", error);
+    console.log(error);
+  }
+};

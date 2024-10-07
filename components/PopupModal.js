@@ -6,7 +6,7 @@ const PopupModal = ({ text, open, onClose }) => {
   useEffect(() => {
     const timer = setTimeout(() => {
       onClose();
-    }, 2000);
+    }, 2200);
 
     return () => {
       clearTimeout(timer);
@@ -17,8 +17,8 @@ const PopupModal = ({ text, open, onClose }) => {
     <Dialog
     style={{
       borderRadius:"12px",
-      width:"250px",
-      height: "200px"
+      width:"300px",
+      height: "fit-content"
     }}
       open={open}
       onClose={onClose}

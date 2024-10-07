@@ -1,13 +1,15 @@
 'use client'
 import { createContext, useState, useEffect } from 'react';
-// import { DataStore } from "@aws-amplify/datastore";
+import { collection, onSnapshot, doc, getDocs } from "firebase/firestore";
+import { db } from '../firebase';
+import dayjs from 'dayjs';
+const UserContext = createContext();
 // import { getUserByEmail  } from '../utils/userFn'
 
-// import { listExercises } from '../graphql/queries';
 // import { onCreateExercise, onUpdateExercise, onDeleteExercise } from '../graphql/subscriptions';
 
 // Create the user context
-const UserContext = createContext();
+
 
 // Create the UserContextProvider component
 const UserProvider = ({ children }) => {
@@ -24,10 +26,82 @@ const UserProvider = ({ children }) => {
   );
   const [currentCaloriesGoal, setCurrentCaloriesGoal] = useState(null);
   const [currentWeightGoal, selCurrentWeightGoal] = useState(null);
+  const currentDate = dayjs().toDate();
 
- useEffect(() => {
-   console.log(myUser);
+//  useEffect(() => {
+//   console.log("User");
+//    console.log(myUser);
+//   }, [myUser]);
+
+//   useEffect(() => {
+//     console.log("Logs");
+//     console.log(userLogs);
+//    }, [userLogs]);
+
+//    useEffect(() => {
+//     console.log("Exercises");
+//     console.log(userExercises);
+//    }, [userExercises]);
+
+
+  //  Populate Logs and Exercises
+   useEffect(() => {
+    if (!myUser.id) return; // Return if there's no user
+    const userDocRef = doc(db, "users", myUser.id);
+    const logsRef = collection(userDocRef, "Logs");
+
+    // Set up the real-time listener for the Logs subcollection
+    const unsubscribe = onSnapshot(logsRef, async (querySnapshot) => {
+      const logsArray = querySnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      // Sort logs by date using dayjs
+      const sortedLogsArray = logsArray.sort((a, b) => 
+        dayjs(a.date.toDate()).isBefore(dayjs(b.date.toDate())) ? -1 : 1
+      );
+
+      setUserLogs(sortedLogsArray); // Update the state with the latest logs
+  
+      if (logsArray.length === 0) {
+        console.log("No logs found for this user.");
+        return; // Exit early if no logs
+      }
+  
+      const allExercises = []; 
+  
+      // Fetch exercises for each log
+      for (const log of logsArray) {
+        const exercisesRef = collection(userDocRef, `Logs/${log.id}/Exercises`);
+        const exercisesSnapshot = await getDocs(exercisesRef); 
+        
+        if (exercisesSnapshot.empty) {
+          console.log(`No exercises found for log ${log.id}.`);
+          continue; // Skip to the next log if no exercises
+        }
+  
+        //each doc in Exercises may contain many Exercises
+        exercisesSnapshot.forEach((doc) => {
+          allExercises.push({
+            id: doc.id,
+            ...doc.data(),
+            logId: log.id, // Reference back to the log it belongs to
+          });
+        });
+      }
+  
+      setUserExercises(allExercises);
+    }, (error) => {
+      console.error("Error fetching logs:", error);
+    });
+  
+    // clean up the listener when the user changes
+    return () => {
+      unsubscribe();
+    };
   }, [myUser]);
+  
+
 
   // set the user as test User
   // useEffect(() => {
@@ -76,24 +150,6 @@ const UserProvider = ({ children }) => {
     const lastC = lastLoggedCaloriesGoal();
     lastC ? setCurrentCaloriesGoal(lastC) : null;
   }, [userLogs]);
-
-  // keep Logs updated
-  // useEffect(() => {
-  //   if(myUser && myUser.id.length > 0) {
-  //     const subscription = DataStore.observeQuery(Log, (p) =>
-  //     p.userID.eq(myUser.id)
-  //   ).subscribe((snapshot) => {
-  //     const { items } = snapshot;
-
-  //     // Convert the date strings to Date objects for correct sorting
-  //     const sortedItems = items.sort(
-  //       (a, b) => new Date(a.date) - new Date(b.date)
-  //     );
-  //     setUserLogs(sortedItems);
-  //   });
-  //   return () => subscription.unsubscribe();
-  //   }
-  // }, [myUser]);
 
 
   // keep user Exercises updated
@@ -205,7 +261,8 @@ const UserProvider = ({ children }) => {
     userLogs,
     userExercises,
     currentWeightGoal,
-    currentCaloriesGoal
+    currentCaloriesGoal,
+    currentDate
   };
 
   return <UserContext.Provider value={contextValue}>{children}</UserContext.Provider>;

@@ -1,7 +1,7 @@
 "use client";
 import { useContext } from "react";
 import { UserContext } from "../../../context/userProvider";
-import { Card, Typography, Avatar, Grid } from "@mui/material";
+import { Card, Typography, Avatar, Grid2, Divider } from "@mui/material";
 
 import ProgressBar from "./ProgressBar";
 import RamenDiningRoundedIcon from "@mui/icons-material/RamenDiningRounded";
@@ -70,28 +70,32 @@ const CaloryWidget = ({ currentCaloriesGoal, caloriesToday }) => {
       )
     } else if (!currentCaloriesGoal && !caloriesToday) {
       return (
+        <>
         <span style={{ fontSize: "14px", color: neutral[500], lineHeight:"14px" }}>
           Add consumed food to display calories
         </span>
+        <Divider />
+        </>
+        
       );
     }
   };
 
   return (
     <Card
-      sx={{ p: "12px", width: { xs: "100%", md: "280px" }, height: "155px" }}
+      sx={{ p: "12px", width: { xs: "100%", md: "30%" } }}
     >
-      <Grid
+      <Grid2
         container
         direction="row"
         justifyContent="space-between"
         alignItems="baseline"
         width="100%"
       >
-        <Grid item width="80%">
+        <Grid2 item width="80%">
             {getCaloriesText()}
-        </Grid>
-        <Grid item>
+        </Grid2>
+        <Grid2 item>
           <Avatar
             variant="rounded"
             sx={{
@@ -105,13 +109,13 @@ const CaloryWidget = ({ currentCaloriesGoal, caloriesToday }) => {
           >
             <RamenDiningRoundedIcon sx={{ height: "30px", width: " 30px" }} />
           </Avatar>
-        </Grid>
-      </Grid>
+        </Grid2>
+      </Grid2>
 
       {currentCaloriesGoal ? (
-        <Grid container direction="column">
-          <Grid item sx={{ mb: 1.25 }}>
-            <Grid container justifyContent="space-between" width="100%">
+        <Grid2 container direction="column">
+          <Grid2 item sx={{ mb: 1.25 }}>
+            <Grid2 container justifyContent="space-between" width="100%">
               <Typography
                 variant="body2"
                 sx={{
@@ -122,13 +126,13 @@ const CaloryWidget = ({ currentCaloriesGoal, caloriesToday }) => {
               >
                 Remaining calories for today
               </Typography>
-            </Grid>
-          </Grid>
-          <Grid item sx={{ mb: 1.25 }}>
+            </Grid2>
+          </Grid2>
+          <Grid2 item sx={{ mb: 1.25 }}>
             <ProgressBar percentage={percentConsumed} />
-          </Grid>
+          </Grid2>
           {myUser.id.length > 0 ? (
-            <Grid item sx={{ mb: 1.25 }}>
+            <Grid2 item sx={{ mb: 1.25 }}>
               <Typography
                 variant="body2"
                 sx={{
@@ -144,9 +148,9 @@ const CaloryWidget = ({ currentCaloriesGoal, caloriesToday }) => {
                   {currentCaloriesGoal}
                 </span>
               </Typography>
-            </Grid>
+            </Grid2>
           ) : null}
-        </Grid>
+        </Grid2>
       ) : null}
     </Card>
   );

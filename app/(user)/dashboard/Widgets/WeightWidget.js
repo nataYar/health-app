@@ -1,27 +1,27 @@
 "use client";
 import { useState } from "react";
-import { Card, Typography, Avatar, Grid, Divider, Stack } from "@mui/material";
+import { Card, Typography, Avatar, Grid2, Divider, Stack } from "@mui/material";
 import ShowChartIcon from "@mui/icons-material/ShowChart";
 import { extraColors, neutral } from "@/app/theme/colors";
 import ArrowDownwardOutlinedIcon from "@mui/icons-material/ArrowDownwardOutlined";
 
 import ArrowUpwardOutlinedIcon from "@mui/icons-material/ArrowUpwardOutlined";
 
-const WeightWidget = ({ weightData, currentWeightGoal }) => {
+const WeightWidget = ({ weightData, currentWeightGoal, currentDate }) => {
   const { lastWeight, firstWeight } = weightData;
-
+  // console.log(weightData)
   return (
     <Card
-      sx={{ p: "12px", width: { xs: "100%", md: "280px" }, height: "155px" }}
+      sx={{ p: "12px", width: { xs: "100%", md: "30%"}, height: "auto", minHeight: "155px" }}
     >
-      <Grid
+      <Grid2
         container
         direction="row"
         justifyContent="space-between"
         alignItems="baseline"
         width="100%"
       >
-        <Grid item>
+        <Grid2 item>
           <Typography
             sx={{
               fontSize: "2.125rem",
@@ -31,8 +31,8 @@ const WeightWidget = ({ weightData, currentWeightGoal }) => {
           >
             {lastWeight}
           </Typography>
-        </Grid>
-        <Grid item>
+        </Grid2>
+        <Grid2 item>
           <Avatar
             variant="rounded"
             sx={{
@@ -41,17 +41,17 @@ const WeightWidget = ({ weightData, currentWeightGoal }) => {
               mt: 1,
               borderRadius: "50%",
               height: "auto",
-              width: " auto",
+              width: "auto",
             }}
           >
             <ShowChartIcon sx={{ height: "30px", width: " 30px" }} />
           </Avatar>
-        </Grid>
-      </Grid>
+        </Grid2>
+      </Grid2>
 
-      <Grid container direction="column">
-        <Grid item sx={{ mb: 1.25 }}>
-          <Grid container justifyContent="space-between" width="100%">
+      <Grid2 container direction="column">
+        <Grid2 item sx={{ mb: 1.25 }}>
+          <Grid2 container justifyContent="space-between" width="100%">
             <Typography
               variant="body2"
               sx={{
@@ -61,12 +61,12 @@ const WeightWidget = ({ weightData, currentWeightGoal }) => {
             >
               Current weight
             </Typography>
-          </Grid>
-        </Grid>
+          </Grid2>
+        </Grid2>
 
-        <Grid item sx={{}}>
+        <Grid2 item sx={{}}>
           <Divider />
-          <Grid container justifyContent="space-between" width="100%">
+          <Grid2 container justifyContent="space-between" width="100%">
             
               {lastWeight > currentWeightGoal ? (
                 <Typography
@@ -93,10 +93,10 @@ const WeightWidget = ({ weightData, currentWeightGoal }) => {
                   pounds untill weight goal
                 </Typography>
               )}
-          </Grid>
-        </Grid>
+          </Grid2>
+        </Grid2>
 
-        <Grid item sx={{ mb: 1.25, }}>
+        <Grid2 item sx={{ mb: 1.25, }}>
           {firstWeight > lastWeight ? (
             <Stack direction="row" alignItems="center" p="0">
               <Avatar
@@ -156,8 +156,8 @@ const WeightWidget = ({ weightData, currentWeightGoal }) => {
               </Typography>
             </Stack>
           )}
-        </Grid>
-      </Grid>
+        </Grid2>
+      </Grid2>
     </Card>
   );
 };

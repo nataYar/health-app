@@ -8,7 +8,7 @@ const Wrapper = ({ children }) => {
       sx={{
         padding: { 
           xs: "90px 20px 20px 20px", 
-          md: "120px 30px 30px 300px" },
+          md: "100px 30px 30px 270px" },
         display: "flex",
         flexFlow: 'column wrap',
         alignItems: {xs: 'center', sm: 'flex-start'},

@@ -4,19 +4,21 @@ import React, { useState, useEffect, useContext } from "react";
 import { UserContext } from "../../context/userProvider";
 import { Stack, TextField, Button, Typography, Paper, useTheme } from "@mui/material";
 import PopupModal from "../../../components/PopupModal";
-import { saveGoals } from "../../utils/userFn";
+import { saveLogFieldFn } from "../../utils/userFn";
 import { neutral } from "@/app/theme/colors";
 import dayjs from "dayjs";
 
 const Goals = () => {
   const theme = useTheme();
-  const { myUser, currentCaloriesGoal, currentWeightGoal } = useContext(UserContext);
+  const { myUser, currentCaloriesGoal, currentWeightGoal, currentDate } = useContext(UserContext);
+
   const [goals, setGoals] = useState({
     caloriesGoal: null,
     weightGoal: null,
   });
+  const [modalText, setModalText] = useState(""); 
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const currentDate = dayjs().format("YYYY-MM-DD")
+ 
   
 
   const handleCloseModal = () => {
@@ -24,7 +26,8 @@ const Goals = () => {
   };
 
   const passGoalsData = async () => {
-    saveGoals(myUser.id, goals.caloriesGoal, goals.weightGoal, currentDate);
+    goals.caloriesGoal ? saveLogFieldFn(myUser.id, currentDate, "caloriesGoal", goals.caloriesGoal): saveLogFieldFn(myUser.id, currentDate, "weightGoal", goals.weightGoal);
+    
     setIsModalOpen(true);
     setGoals({
       caloriesGoal: null,
@@ -34,10 +37,14 @@ const Goals = () => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-
-    goals.caloriesGoal !== null && goals.weightGoal !== null
-      ? passGoalsData()
-      : alert("Please log weight and date");
+    if(myUser.id && (goals.caloriesGoal !== null || goals.weightGoal !== null)){
+      passGoalsData()
+      setModalText("Goal logged!")
+      setIsModalOpen(true);
+    } else {
+      setModalText("Sign in and log either weight goal or calories")
+      setIsModalOpen(true);
+    }
   };
 
   const handleGoalChange = (event, type) => {
@@ -57,7 +64,6 @@ const Goals = () => {
           caloriesGoal: cVal,
         }));
         break;
-
       default:
         break;
     }
@@ -96,7 +102,7 @@ const Goals = () => {
         ) : null}
 
         <PopupModal
-          text="Goal logged!"
+          text={modalText}
           open={isModalOpen}
           onClose={handleCloseModal}
         />
@@ -158,13 +164,13 @@ const Goals = () => {
           <Button
             variant="contained"
             type="submit"
-            disabled={!goals.caloriesGoal}
+            disabled={!goals.caloriesGoal && !goals.weightGoal}
           >
             Log goal
           </Button>
         </form>
         <PopupModal
-          text="Goal logged!"
+          text={modalText}
           open={isModalOpen}
           onClose={handleCloseModal}
         />

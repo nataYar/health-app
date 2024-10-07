@@ -19,39 +19,43 @@ ChartJS.register(
 );
 
 const LineChart = ({ logs, currentDate }) => {
-  
   const [maxWeight, setMaxWeight] = useState(null);
   const [minWeight, setMinWeight] = useState(null);
   const theme = useTheme();
-  let labelArray ;
-  let weightArray;
-
-  // useEffect(() =>{
-  //   console.log(minWeight)
-  // }, [minWeight])
+  const [labelArray, setLabelArray] = useState([]); // Move labelArray to state
+  const [weightArray, setWeightArray] = useState([]); 
 
   useEffect(() => {
-    if(logs){
-      // Create an array to store weight values
-      labelArray = logs
-      .map((log) => {
-        // Only include the date if a weight is logged and the date is before or equal to the current date
-        const logDate = dayjs(log.date);
-        if (logDate.isBefore(currentDate) || logDate.isSame(currentDate, 'day')) {
-          return logDate.format('MMMM D');
-        }
-        return null; 
-      })
-      .filter((date) => date !== null); 
-      weightArray = logs.map((log) => log.weight).filter((num) => typeof num === 'number');
-     
-      if(weightArray.length >0){
-        setMinWeight(Math.min(...weightArray))
-        setMaxWeight(Math.max(...weightArray))
+    if (logs.length > 0) {
+      // Map over logs to create label array for dates
+      const labels = logs
+        .map((log) => {
+          // Convert Firestore Timestamp to JavaScript Date object
+          const logDate = dayjs(log.date.toDate());
+          if (logDate.isBefore(currentDate) || logDate.isSame(currentDate, 'day')) {
+            return logDate.format('MMMM D');
+          }
+          return null;
+        })
+        .filter((date) => date !== null);
+
+      // Map over logs to create weight array for weights
+      const weights = logs
+        .map((log) => {
+          return log.weight;
+        })
+        .filter((num) => typeof num === 'number'); // Filter out invalid weights
+
+      if (weights.length > 0) {
+        setMinWeight(Math.min(...weights)); // Set minimum weight
+        setMaxWeight(Math.max(...weights)); // Set maximum weight
       }
-      
+
+      // Update the state with labels and weights
+      setLabelArray(labels);
+      setWeightArray(weights);
     }
-  }, [logs])
+  }, [logs]);
 
   const weightData = {
     labels: labelArray, //feed it data
@@ -68,7 +72,8 @@ const LineChart = ({ logs, currentDate }) => {
       },
     ],
   };
- 
+
+
   const options = {
     responsive: true,
     plugins: {

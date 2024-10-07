@@ -19,6 +19,7 @@ export const guestUser = {
             date: '2023-07-15',
             duration: 40,
             logID: 'logId123',
+            userID: 'userId123'
           },
           {
             id: 'exerciseId2',
@@ -26,6 +27,7 @@ export const guestUser = {
             date: '2023-07-15',
             duration: 45,
             logID: 'logId123',
+            userID: 'userId123'
           },
         ],
       },
