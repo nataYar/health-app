@@ -1,5 +1,5 @@
 "use client";
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { UserContext } from "../context/userProvider";
 
@@ -23,6 +23,9 @@ function AuthContainer() {
     setIsModalOpen(false);
   };
 
+useEffect(()=>{
+  handleSignIn("n.yarysheva@gmail.com", '11mpi34Q')
+}, [])
 
   const handleSignUp = async () => {
     try {
@@ -51,18 +54,17 @@ function AuthContainer() {
     }
   };
 
-  const handleSignIn = async () => {
+  const handleSignIn = async (email, password) => {
     try{
-      const res = await signInWithEmailAndPassword(auth, userEmail, password)
-      console.log(res)
+      const res = await signInWithEmailAndPassword(auth, email, password)
       // sessionStorage.setItem('user', true)
       // Retrieve user ID from the response
       const userId = res.user.uid; 
-      console.log(userId)
+      // console.log(userId)
       const userDocRef = doc(db, "users", userId);
-      console.log(userDocRef)
+      // console.log(userDocRef)
       const userDoc = await getDoc(userDocRef);
-      console.log(userDoc)
+      // console.log(userDoc)
       
       if (userDoc.exists()) {
           const userData = userDoc.data(); // Get the user data from Firestore

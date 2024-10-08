@@ -9,7 +9,7 @@ import ArrowUpwardOutlinedIcon from "@mui/icons-material/ArrowUpwardOutlined";
 
 const WeightWidget = ({ weightData, currentWeightGoal, currentDate }) => {
   const { lastWeight, firstWeight } = weightData;
-  // console.log(weightData)
+ 
   return (
     <Card
       sx={{ p: "12px", width: { xs: "100%", md: "30%"}, height: "auto", minHeight: "155px" }}

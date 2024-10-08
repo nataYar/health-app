@@ -24,16 +24,23 @@ export default function Dashboard() {
   const [caloriesToday, setCaloriesToday] = useState(0)
 
   useEffect(() => {
+    
     const lastLoggedWeight = () => {
-
+      console.log(userLogs)
       for (let i = userLogs.length - 1; i >= 0; i--) {
         const log = userLogs[i];
         if (log.weight !== null) {
           return log.weight;
         }
       }
-      return null; // Return null if all logs have null weights
+      return null; 
+      // Return null if all logs have null weights
     };
+    let lastWeight = null; 
+    if(userLogs.length > 0){
+      lastWeight = lastLoggedWeight();
+    }
+    
     const firstLoggedWeight = userLogs.reduce((firstWeight, log) => {
       if (firstWeight === null && log.weight !== null) {
         return log.weight;
@@ -41,10 +48,7 @@ export default function Dashboard() {
       // Otherwise, keep the firstWeight unchanged
       return firstWeight;
     }, null);
-    let lastWeight = null; 
-    if(userLogs.length > 0){
-      lastWeight = lastLoggedWeight();
-    }
+   
     setWeightData({ lastWeight: lastWeight, firstWeight: firstLoggedWeight });
 
   //   // MINUTES
@@ -80,6 +84,8 @@ export default function Dashboard() {
   //   } else {
   //     return null;
   //   }
+  console.log("Logs");
+    console.log(userLogs);
   }, [userLogs]);
 
   return (

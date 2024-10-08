@@ -33,10 +33,7 @@ const UserProvider = ({ children }) => {
 //    console.log(myUser);
 //   }, [myUser]);
 
-//   useEffect(() => {
-//     console.log("Logs");
-//     console.log(userLogs);
-//    }, [userLogs]);
+  
 
 //    useEffect(() => {
 //     console.log("Exercises");
@@ -102,54 +99,58 @@ const UserProvider = ({ children }) => {
   }, [myUser]);
   
 
-
-  // set the user as test User
-  // useEffect(() => {
-  //   const fetchUser = async () => {
-  //     try {
-  //       // const user = await getUserByEmail("n.yarysheva@gmail.com");
-  //       console.log(user)
-  //       updateUser({
-  //         id: user.id, 
-  //         nickname: user.nickname,
-  //         email: user.email,
-  //       });
-  //       return user;
-  //     } catch (error) {
-  //       console.error("Error fetching user:", error);
-  //     }
-  //   };
-
-  //   fetchUser();
-  // }, []);
-
   useEffect(() => {
     const lastLoggedWeightGoal = () => {
       for (let i = userLogs.length - 1; i >= 0; i--) {
         const log = userLogs[i];
-        if (log.weightGoal !== null) {
+        // Check if weightGoal exists
+        if (log.weightGoal !== null && log.weightGoal !== undefined) {
           return log.weightGoal;
         }
       }
-      return null; // Return null if all logs have null weights
+      return null;  // Return null if no weightGoal is found
     };
+  
     const lastW = lastLoggedWeightGoal();
-    lastW ? selCurrentWeightGoal(lastW) : null;
+    console.log("Last weight goal:", lastW);
+    if (lastW !== null) {
+      selCurrentWeightGoal(lastW);
+    }
   }, [userLogs]);
 
   useEffect(() => {
     const lastLoggedCaloriesGoal = () => {
       for (let i = userLogs.length - 1; i >= 0; i--) {
         const log = userLogs[i];
-        if (log.caloriesGoal !== null) {
+        // Check if caloriesGoal exists
+        if (log.caloriesGoal !== null && log.caloriesGoal !== undefined) {
           return log.caloriesGoal;
         }
       }
-      return null; // Return null if all logs have null weights
+      return null;  // Return null if no caloriesGoal is found
     };
+  
     const lastC = lastLoggedCaloriesGoal();
-    lastC ? setCurrentCaloriesGoal(lastC) : null;
+    console.log("Last calories goal:", lastC);
+    if (lastC !== null) {
+      setCurrentCaloriesGoal(lastC);
+    }
   }, [userLogs]);
+  
+  // useEffect(() => {
+  //   const lastLoggedCaloriesGoal = () => {
+  //     for (let i = userLogs.length - 1; i >= 0; i--) {
+  //       const log = userLogs[i];
+  //       console.log(userLogs[i])
+  //       if (log.caloriesGoal !== null) {
+  //         return log.caloriesGoal;
+  //       }
+  //     }
+  //     return null; // Return null if all logs have null weights
+  //   };
+  //   const lastC = lastLoggedCaloriesGoal();
+  //   lastC ? setCurrentCaloriesGoal(lastC) : null;
+  // }, [userLogs]);
 
 
   // keep user Exercises updated
