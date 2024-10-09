@@ -22,28 +22,36 @@ const LineChart = ({ logs, currentDate }) => {
   const [maxWeight, setMaxWeight] = useState(null);
   const [minWeight, setMinWeight] = useState(null);
   const theme = useTheme();
-  const [labelArray, setLabelArray] = useState([]); // Move labelArray to state
+  const [labelArray, setLabelArray] = useState([]);
   const [weightArray, setWeightArray] = useState([]); 
+
 
   useEffect(() => {
     if (logs.length > 0) {
       // Map over logs to create label array for dates
+      console.log("Logs");
+      console.log(logs);
+    
       const labels = logs
         .map((log) => {
           // Convert Firestore Timestamp to JavaScript Date object
           const logDate = dayjs(log.date.toDate());
-          if (logDate.isBefore(currentDate) || logDate.isSame(currentDate, 'day')) {
+          if (log.weight !== null && log.weight !== undefined) {
             return logDate.format('MMMM D');
           }
           return null;
         })
-        .filter((date) => date !== null);
+        .filter((date) => date !== null)
 
       // Map over logs to create weight array for weights
       const weights = logs
         .map((log) => {
-          return log.weight;
-        })
+              if (log.weight !== null && log.weight !== undefined) {
+                return log.weight;
+              } 
+              return null; 
+            }
+          )
         .filter((num) => typeof num === 'number'); // Filter out invalid weights
 
       if (weights.length > 0) {

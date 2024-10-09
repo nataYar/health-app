@@ -7,7 +7,7 @@ const Wrapper = ({ children }) => {
     direction='column'
       sx={{
         padding: { 
-          xs: "90px 20px 20px 20px", 
+          xs: "70px 10px 20px 10px", 
           md: "100px 30px 30px 270px" },
         display: "flex",
         flexFlow: 'column wrap',

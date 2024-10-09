@@ -24,12 +24,12 @@ export default function Dashboard() {
   const [caloriesToday, setCaloriesToday] = useState(0)
 
   useEffect(() => {
-    
     const lastLoggedWeight = () => {
       console.log(userLogs)
       for (let i = userLogs.length - 1; i >= 0; i--) {
         const log = userLogs[i];
-        if (log.weight !== null) {
+        if (log.weight !== undefined && log.weight !== null) {
+          console.log(log.weight);
           return log.weight;
         }
       }
@@ -42,7 +42,8 @@ export default function Dashboard() {
     }
     
     const firstLoggedWeight = userLogs.reduce((firstWeight, log) => {
-      if (firstWeight === null && log.weight !== null) {
+      if (firstWeight === null && log.weight !== undefined && log.weight !== null) {
+        console.log(log.weight);
         return log.weight;
       }
       // Otherwise, keep the firstWeight unchanged
@@ -51,30 +52,30 @@ export default function Dashboard() {
    
     setWeightData({ lastWeight: lastWeight, firstWeight: firstLoggedWeight });
 
-  //   // MINUTES
-  if (userExercises.length > 0){
-    const totalDuration = userExercises.reduce((acc, exercise) => acc + parseInt(exercise.duration), 0);
-    const averageDuration = totalDuration / userExercises.length;
+    //   // MINUTES
+    // if (userExercises.length > 0){
+    //   const totalDuration = userExercises.reduce((acc, exercise) => acc + parseInt(exercise.duration), 0);
+    //   const averageDuration = totalDuration / userExercises.length;
 
-    const exToday = userExercises.filter(day => day.date === currentDate)
-    if (exToday.length > 0) {
-      // Check if logToday array is not empty before accessing its properties
-      setExercisesDuration({duration: exToday[0].duration, average: averageDuration})
-    } else  if((exToday.length == 0)){
-      const lastLoggedEx = () => {
-        for (let i = userExercises.length - 1; i >= 0; i--) {
-          const log = userExercises[i];
-          if (log.duration !== null) {
-            return log;
-          }
-        }
-      };
-      const lastDur = lastLoggedEx();
-      lastDur ? 
-      setExercisesDuration({duration: lastDur.duration, average: averageDuration, lastDate: lastDur.date}) : null
-    }
-  }
-    
+    //   const exToday = userExercises.filter(day => day.date === currentDate)
+    //   if (exToday.length > 0) {
+    //     // Check if logToday array is not empty before accessing its properties
+    //     setExercisesDuration({duration: exToday[0].duration, average: averageDuration})
+    //   } else  if((exToday.length == 0)){
+    //     const lastLoggedEx = () => {
+    //       for (let i = userExercises.length - 1; i >= 0; i--) {
+    //         const log = userExercises[i];
+    //         if (log.duration !== null) {
+    //           return log;
+    //         }
+    //       }
+    //     };
+    //     const lastDur = lastLoggedEx();
+    //     lastDur ? 
+    //     setExercisesDuration({duration: lastDur.duration, average: averageDuration, lastDate: lastDur.date}) : null
+    //   }
+    // }
+  }, [userLogs] )
 
   //   // CALORIES consumed today
   //   const logToday = userLogs.filter(day => day.date === currentDate)
@@ -84,9 +85,7 @@ export default function Dashboard() {
   //   } else {
   //     return null;
   //   }
-  console.log("Logs");
-    console.log(userLogs);
-  }, [userLogs]);
+ 
 
   return (
     <Box

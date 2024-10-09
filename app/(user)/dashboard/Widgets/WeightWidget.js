@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Card, Typography, Avatar, Grid2, Divider, Stack } from "@mui/material";
 import ShowChartIcon from "@mui/icons-material/ShowChart";
 import { extraColors, neutral } from "@/app/theme/colors";
@@ -9,7 +9,11 @@ import ArrowUpwardOutlinedIcon from "@mui/icons-material/ArrowUpwardOutlined";
 
 const WeightWidget = ({ weightData, currentWeightGoal, currentDate }) => {
   const { lastWeight, firstWeight } = weightData;
- 
+  
+  useEffect(() => {
+    console.log(weightData)}, 
+    [weightData])
+  
   return (
     <Card
       sx={{ p: "12px", width: { xs: "100%", md: "30%"}, height: "auto", minHeight: "155px" }}

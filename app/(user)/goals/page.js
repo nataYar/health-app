@@ -18,11 +18,6 @@ const Goals = () => {
   });
   const [modalText, setModalText] = useState(""); 
   const [isModalOpen, setIsModalOpen] = useState(false);
- 
-  useEffect(() => {
-    console.log("goals");
-    console.log(goals);
-  }, [goals])
 
   const handleCloseModal = () => {
     setIsModalOpen(false);

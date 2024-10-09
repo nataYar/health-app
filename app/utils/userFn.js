@@ -97,14 +97,14 @@ export const saveLogFieldFn = async (userId, date, field, value) => {
     
     // Convert the Firestore Timestamp to a JavaScript Date
     const inputDate = date
-    console.log(inputDate)
+    // console.log(inputDate)
     inputDate.setHours(0, 0, 0, 0); // Set time to midnight for comparison
 
     logsSnapshot.forEach((doc) => {
       const logData = doc.data();
       const logDate = logData.date.toDate(); // Assuming date is stored as a Firestore Timestamp
       logDate.setHours(0, 0, 0, 0); // Set time to midnight for comparison
-      console.log(logDate.setHours(0, 0, 0, 0))
+      // console.log(logDate.setHours(0, 0, 0, 0))
 
       // Check if the log date matches the input date
       if (logDate.getTime() === inputDate.getTime()) {
