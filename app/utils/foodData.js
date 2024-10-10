@@ -6,6 +6,7 @@ const nutritionApiKey = process.env.NEXT_PUBLIC_EDAMAM_NUTRITION_KEY;
 
 const recipeApiId = process.env.NEXT_PUBLIC_EDAMAM_RECIPE_ID;
 const recipeApiKey = process.env.NEXT_PUBLIC_EDAMAM_RECIPE_KEY;
+console.log(foodApiId)
 
 export const fetchFoodData = async (searchQuery) => {
   try {

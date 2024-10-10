@@ -1,3 +1,4 @@
+"use client";
 import { useEffect, useState } from "react";
 import Pagination from "@mui/material/Pagination";
 import { Box, Stack, Typography } from "@mui/material";
@@ -9,21 +10,24 @@ import ExerciseCard from "./ExerciseCard";
 
 const Exercises = ({ exercises, setExercises, bodyPart}) => {
   const [exercisesPerPage] = useState(9);
-  // const [exercises, setExercises] = useState([]);
+  
   const [currentPage, setCurrentPage] = useState(1);
 
-  // useEffect(() => {
-  //   const renderExercises = () => {
-  //     const newExercises = [];
-  //     const exerciseCount = 600;
-  //     for (let i = 0; i < exerciseCount; i++) {
-  //       newExercises.push({ text: `jhbj ${i}`, id: i, like: false  });
-  //     }
-  //     setExercises(newExercises);
-  //   };
+  useEffect(() => {console.log(exercises)}, [exercises])
+  
+  useEffect(() => {
+    const renderExercises = () => {
+      const newExercises = [];
+      const exerciseCount = 600;
+      for (let i = 0; i < exerciseCount; i++) {
+        newExercises.push({ text: `jhbj ${i}`, id: i, like: false  });
+      }
+      setExercises(newExercises);
+    };
 
-  //   renderExercises();
-  // }, []);
+    renderExercises();
+  }, []);
+
 
 
     useEffect(() => {

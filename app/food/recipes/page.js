@@ -171,7 +171,6 @@ const Recipes = () => {
       height='100%'>
         {recipes.length > 0 ? (
           recipes[0].hits.map(( el, index) => (
-
               <RecipeCard
                 key={index} 
                 title={el.recipe.label}
@@ -182,7 +181,6 @@ const Recipes = () => {
                 ingredients={el.recipe.ingredients}
                 totalWeight={el.recipe.totalWeight}
               />
-        
           ))
         ) : (
           <></>

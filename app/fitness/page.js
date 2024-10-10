@@ -17,6 +17,7 @@ import FitnessLogContainer from "./FitnessLogContainer";
 import { exercisesData } from "./exercisesData";
 import { saveExerciseFn } from "../utils/userFn";
 import { UserContext } from "../context/userProvider";
+import PopupModal from "../../components/PopupModal.js";
 import dayjs from "dayjs";
 
 const LogExercise = () => {
@@ -25,11 +26,21 @@ const LogExercise = () => {
   const [exercise, setExercise] = useState("");
   const [customExercise, setCustomExercise] = useState("");
   const [duration, setDuration] = useState("");
+  const [modalText, setModalText] = useState(""); 
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+
 
   const handleLogExercise = () => {
-    const ex = exercise !== "Custom" ? exercise : customExercise;
-    saveExerciseFn(myUser.id, ex, duration, selectedDate.format("YYYY-MM-DD"));
-    clearInput(); // Clear input fields after logging exercise
+    if(myUser.id && (exercise || customExercise)  && duration && selectedDate ){
+      const ex = exercise !== "Custom" ? exercise : customExercise;
+      saveExerciseFn(myUser.id, ex, duration, selectedDate.format("YYYY-MM-DD"));
+      clearInput(); // Clear input fields
+    } else if (!myUser.id && (exercise || customExercise) && duration && selectedDate ) {
+      setModalText("Please sign-in")
+      setIsModalOpen(true)
+    } 
+    
   };
 
   const clearInput = () => {
@@ -49,14 +60,16 @@ const LogExercise = () => {
   };
 
   const handleDurationChange = (event) => {
-   // Get the input value as a string
-  const valueAsString = event.target.value;
+    // Get the input value as a string
+    const valueAsString = event.target.value;
+    // Use parseInt to convert the string to a number
+    const valueAsNumber = parseInt(valueAsString, 10);
+    // Set the duration to the parsed number
+    setDuration(valueAsNumber);
+  };
 
-  // Use parseInt to convert the string to a number
-  const valueAsNumber = parseInt(valueAsString, 10);
-
-  // Set the duration to the parsed number
-  setDuration(valueAsNumber);
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
   };
 
   return (
@@ -122,10 +135,12 @@ const LogExercise = () => {
             type="number"
             label="Duration in min"
             value={duration}
-            inputProps={{
-              inputMode: "numeric", // Set input mode to numeric
-              pattern: "[0-9]*", // Only allow numeric input
-              step: "1", // Only allow integer values
+            slotProps={{
+              input: {
+                inputMode: "numeric", // Set input mode to numeric
+                pattern: "[0-9]*", // Only allow numeric input
+                step: "1", // Only allow integer values
+              },
             }}
             onChange={handleDurationChange}
             autoComplete="false"
@@ -166,6 +181,11 @@ const LogExercise = () => {
           exercises={userExercises}
         />
       </Box>
+      <PopupModal
+          text={modalText}
+          open={isModalOpen}
+          onClose={handleCloseModal}
+        />
     </>
   );
 };

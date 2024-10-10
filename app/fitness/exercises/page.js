@@ -1,42 +1,54 @@
 "use client";
 import { useState, useEffect } from "react";
+import { useRouter } from 'next/navigation';
 
 import HorizontalBar from "./HorizontalBar";
 import { exerciseOptions, fetchData } from "@/app/utils/exerciseData";
-import {
-  Box,
-} from "@mui/material";
+import { Box } from "@mui/material";
 import Exercises from "./Exercises";
-
 
 const Exercise = () => {
   const [bodyParts, setBodyParts] = useState([]);
   const [bodyPart, setBodyPart] = useState('all');
   const [exercises, setExercises] = useState([])
+  const router = useRouter();  // Get access to the router
 
   useEffect(() => {
-    const fetchExercisesData = async () => {
-      const bodyPartsData = await fetchData('https://exercisedb.p.rapidapi.com/exercises/bodyPartList', exerciseOptions);
+    if (router.pathname === '/fitness/exercises') {
+      const fetchExercisesData = async () => {
+        const url = 'https://exercisedb.p.rapidapi.com/exercises/bodyPartList';
 
-      setBodyParts(['all', ...bodyPartsData]);
-    };
+        const bodyPartsData = await fetchData(url, exerciseOptions);
+        
+        console.log(bodyPartsData);
 
-    fetchExercisesData();
+        if (bodyPartsData.length > 0) {
+          setBodyParts(['all', ...bodyPartsData]);
+        }
+      };
+      fetchExercisesData();
+    }
   }, []);
+
+const changeBodyPart = (el) => {
+  setBodyPart(el)
+}
+
 useEffect(()=>{
-  console.log(bodyParts),
-  console.log(exercises)
-}, bodyParts)
+  console.log("bodyParts")
+  console.log(bodyParts)
+}, [bodyParts, exercises])
+
   return (
         <Box sx={{ width: "100%" }}>
           <HorizontalBar
             data={bodyParts}
             bodyPart={bodyPart}
             bodyParts={bodyParts}
-            setBodyPart={setBodyPart}
-          />
+            handleBodyPartChange={changeBodyPart}
+          /> 
           <Exercises bodyPart={bodyPart} exercises={exercises} setExercises={setExercises}/>
-         {/* <ExercisesNextPagination /> */}
+        
         </Box>
 
 

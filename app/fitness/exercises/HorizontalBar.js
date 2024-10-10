@@ -1,9 +1,10 @@
+"use client";
 import { Box, List, Stack } from "@mui/material";
 
 import ExerciseCard from './ExerciseCard';
 import BodyPart from "./BodyPart";
 
-const HorizontalBar = ({ data, bodyParts, setBodyPart, bodyPart }) => {
+const HorizontalBar = ({ data, bodyParts, handleBodyPartChange, bodyPart }) => {
 
   return (
     <Stack
@@ -19,7 +20,7 @@ const HorizontalBar = ({ data, bodyParts, setBodyPart, bodyPart }) => {
         <Box
           key={ind}
         >
-          { bodyParts ? <BodyPart item={item} setBodyPart={setBodyPart} bodyPart={bodyPart} /> : <ExerciseCard exercise={item} /> }
+          { bodyParts ? <BodyPart item={item} handleBodyPartChange={handleBodyPartChange} bodyPart={bodyPart} /> : <ExerciseCard exercise={item} /> }
         </Box>
       )): null}
     </Stack>

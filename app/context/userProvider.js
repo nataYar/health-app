@@ -112,7 +112,6 @@ const UserProvider = ({ children }) => {
     };
   
     const lastW = lastLoggedWeightGoal();
-    console.log("Last weight goal:", lastW);
     if (lastW !== null) {
       selCurrentWeightGoal(lastW);
     }
@@ -131,7 +130,6 @@ const UserProvider = ({ children }) => {
     };
   
     const lastC = lastLoggedCaloriesGoal();
-    console.log("Last calories goal:", lastC);
     if (lastC !== null) {
       setCurrentCaloriesGoal(lastC);
     }

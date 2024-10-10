@@ -1,12 +1,11 @@
 "use client";
 
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useContext } from "react";
 import { UserContext } from "../../context/userProvider";
 import { Stack, TextField, Button, Typography, Paper, useTheme } from "@mui/material";
 import PopupModal from "../../../components/PopupModal";
 import { saveLogFieldFn } from "../../utils/userFn";
 import { neutral } from "@/app/theme/colors";
-import dayjs from "dayjs";
 
 const Goals = () => {
   const theme = useTheme();

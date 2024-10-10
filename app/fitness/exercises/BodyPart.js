@@ -1,6 +1,7 @@
+"use client";
 import { Stack, Typography } from "@mui/material";
 
-const BodyPart = ({ item, bodyPart, setBodyPart }) => {
+const BodyPart = ({ item, bodyPart, handleBodyPartChange}) => {
   return (
     <Stack
       type="button"
@@ -28,7 +29,7 @@ const BodyPart = ({ item, bodyPart, setBodyPart }) => {
             }
       }
       onClick={() => {
-        setBodyPart(item);
+        handleBodyPartChange(item);
       }}
     >
       <Typography
