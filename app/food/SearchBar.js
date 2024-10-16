@@ -1,4 +1,4 @@
-import { Box, Grid, TextField, Button, Paper } from "@mui/material";
+import { Box, Grid2, TextField, Button, Paper } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 
 const SearchBar = ({ searchedTerm, setSearchedTerm, searchRecipe }) => {
@@ -52,8 +52,8 @@ const SearchBar = ({ searchedTerm, setSearchedTerm, searchRecipe }) => {
           onChange={handleInputChange}
         />
       </Box>
-      <Grid container direction="row" justifyContent="flex-start" spacing={1}>
-        <Grid item>
+      <Grid2 container direction="row" justifyContent="flex-start" spacing={1}>
+        <Grid2 item>
           <Button
             variant="contained"
             disabled={!searchedTerm}
@@ -66,8 +66,8 @@ const SearchBar = ({ searchedTerm, setSearchedTerm, searchRecipe }) => {
           >
             Clear input
           </Button>
-        </Grid>
-        <Grid item>
+        </Grid2>
+        <Grid2 item>
           <Button
             variant="contained"
             disabled={!searchedTerm}
@@ -77,8 +77,8 @@ const SearchBar = ({ searchedTerm, setSearchedTerm, searchRecipe }) => {
           >
             Search
           </Button>
-        </Grid>
-      </Grid>
+        </Grid2>
+      </Grid2>
     </Box>
   );
 };

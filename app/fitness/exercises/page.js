@@ -35,9 +35,8 @@ const changeBodyPart = (el) => {
 }
 
 useEffect(()=>{
-  console.log("bodyParts")
-  console.log(bodyParts)
-}, [bodyParts, exercises])
+  console.log("bodyParts" + bodyParts)
+}, [bodyParts])
 
   return (
         <Box sx={{ width: "100%" }}>
@@ -47,7 +46,8 @@ useEffect(()=>{
             bodyParts={bodyParts}
             handleBodyPartChange={changeBodyPart}
           /> 
-          <Exercises bodyPart={bodyPart} exercises={exercises} setExercises={setExercises}/>
+          {/* 
+          <Exercises bodyPart={bodyPart} exercises={exercises} setExercises={setExercises}/> */}
         
         </Box>
 

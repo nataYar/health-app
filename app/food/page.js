@@ -131,7 +131,7 @@ const Food = () => {
           />
         ) : null}
       </Stack>
-      {data ? <SideTable data={data} /> : null}
+      {/* {data ? <SideTable data={data} /> : null} */}
       <PopupModal
         text="food data logged!"
         open={isModalOpen}

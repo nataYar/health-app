@@ -29,8 +29,6 @@ const LogExercise = () => {
   const [modalText, setModalText] = useState(""); 
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-
-
   const handleLogExercise = () => {
     if(myUser.id && (exercise || customExercise)  && duration && selectedDate ){
       const ex = exercise !== "Custom" ? exercise : customExercise;
@@ -40,7 +38,6 @@ const LogExercise = () => {
       setModalText("Please sign-in")
       setIsModalOpen(true)
     } 
-    
   };
 
   const clearInput = () => {

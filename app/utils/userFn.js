@@ -104,7 +104,6 @@ export const saveLogFieldFn = async (userId, date, field, value) => {
       const logData = doc.data();
       const logDate = logData.date.toDate(); // Assuming date is stored as a Firestore Timestamp
       logDate.setHours(0, 0, 0, 0); // Set time to midnight for comparison
-      // console.log(logDate.setHours(0, 0, 0, 0))
 
       // Check if the log date matches the input date
       if (logDate.getTime() === inputDate.getTime()) {
@@ -137,54 +136,67 @@ export const saveLogFieldFn = async (userId, date, field, value) => {
 };
 
 
-// export const saveLogFn = async (
-//   userId,
-//   date,
-//   caloriesVal,
-//   proteinVal,
-//   fatsVal,
-//   carbsVal
-// ) => {
-//   try {
-   
-//     const logsByDate = await DataStore.query(Log, (log) => log.date.eq(date));
-//     // check if the Log exists
-//     const logByUser = logsByDate.filter((log) => log.userID === userId);
+export const saveLogFn = async (
+  userId,
+  date,
+  caloriesVal,
+  proteinVal,
+  fatsVal,
+  carbsVal
+) => {
+  try {
+    const userDocRef = doc(db, "users", userId);
+    const logsRef = collection(userDocRef, "Logs");
+    
+    // Query to check if a log with the same date already exists
+    const logsSnapshot = await getDocs(logsRef);
+    let logIdToUpdate = null;
+    
+    // Convert the Firestore Timestamp to a JavaScript Date
+    const inputDate = date
+    // console.log(inputDate)
+    inputDate.setHours(0, 0, 0, 0); // Set time to midnight for comparison
 
-//     if (logByUser.length > 0) {
-//        await DataStore.save(Log.copyOf(logByUser[0], (updated) => {
-//         // check if the values are provided and are different from the current values
-//         if (caloriesVal !== undefined && updated.calories !== caloriesVal) {
-//           updated.calories = updated.calories + caloriesVal;
-//         }
-//         if (proteinVal !== undefined ) {
-//           updated.protein =  updated.protein + proteinVal;
-//         }
-//         if (fatsVal !== undefined) {
-//           updated.fats =  updated.fats + fatsVal;
-//         }
-//         if (carbsVal !== undefined ) {
-//           updated.carbs =  updated.carbs +carbsVal;
-//         }
-//       }));
-//     } else {
-//       // if doesn't exist, create the Log
-//       await DataStore.save(
-//         new Log({
-//           date: date,
-//           userID: userId,
-//           calories: caloriesVal,
-//           protein: proteinVal,
-//           fats: fatsVal,
-//           carbs: carbsVal,
-//         })
-//       );
-//     }
-//   } catch (error) {
-//     console.log("Error saving new user:", error);
-//     console.log(error);
-//   }
-// };
+    logsSnapshot.forEach((doc) => {
+      const logData = doc.data();
+      const logDate = logData.date.toDate(); // Assuming date is stored as a Firestore Timestamp
+      logDate.setHours(0, 0, 0, 0); // Set time to midnight for comparison
+
+      // Check if the log date matches the input date
+      if (logDate.getTime() === inputDate.getTime()) {
+        logIdToUpdate = doc.id; // Store the ID of the log to update
+      }
+    });
+    if (logIdToUpdate) {
+      // Log entry exists; update the specific field
+      const logDocRef = doc(logsRef, logIdToUpdate);
+      await setDoc(logDocRef, { 
+        id: logDocRef.id,
+        calories: (logData.calories || 0) + caloriesVal,
+        protein:  (logData.protein || 0) + proteinVal,
+        fats:  (logData.fats || 0) + fatsVal,
+        carbs:  (logData.carbs || 0) + carbsVal
+      }, { merge: true });
+      console.log(`Updated field ${field} in log ${logIdToUpdate}`);
+    } else {
+      // Log entry doesn't exist; create a new one
+      const newLogRef = doc(logsRef); // Create a new log reference
+      const newLogData = {
+        date: date, // Save the date as a Timestamp
+        id: newLogRef.id,
+        calories: caloriesVal,
+        protein: proteinVal,
+        fats: fatsVal,
+        carbs: carbsVal,
+      };
+      await setDoc(newLogRef, newLogData);
+      console.log(`Created new log for date ${date}`);
+    }
+  } catch (error) {
+    console.log("Error saving new user:", error);
+    console.log(error);
+  }
+};
 
 
 export const saveExerciseFn = async (userId, exercise, duration, date) => {
