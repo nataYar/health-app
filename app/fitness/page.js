@@ -119,14 +119,14 @@ const LogExercise = () => {
             </Select>
           </FormControl>
 
-          {exercise === "Custom" ? (
+          {exercise === "Custom" && (
             <TextField
               label="Add custom exercise"
               value={customExercise}
               onChange={handleCustomExerciseChange}
               sx={{ width: { xs: "100%", md: "200px" } }}
             />
-          ) : null}
+          )}
 
           <TextField
             type="number"

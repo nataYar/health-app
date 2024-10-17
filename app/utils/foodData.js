@@ -6,23 +6,26 @@ const nutritionApiKey = process.env.NEXT_PUBLIC_EDAMAM_NUTRITION_KEY;
 
 const recipeApiId = process.env.NEXT_PUBLIC_EDAMAM_RECIPE_ID;
 const recipeApiKey = process.env.NEXT_PUBLIC_EDAMAM_RECIPE_KEY;
-console.log(foodApiId)
+
 
 export const fetchFoodData = async (searchQuery) => {
-  try {
-    const response = await fetch(
-      `https://api.edamam.com/api/food-database/v2/parser?app_id=${foodApiId}&app_key=${foodApiKey}&ingr=${searchQuery}&nutrition-type=logging`
-    );
+  console.log(foodApiId)
+  console.log(foodApiKey)
 
-    if (!response.ok) {
-      throw new Error("Request failed");
-    }
+  // try {
+  //   const response = await fetch(
+  //     `https://api.edamam.com/api/food-database/v2/parser?app_id=${foodApiId}&app_key=${foodApiKey}&ingr=${searchQuery}&nutrition-type=logging`
+  //   );
 
-    const data = await response.json();
-    return data;
-  } catch (error) {
-    console.error(error);
-  }
+  //   if (!response.ok) {
+  //     throw new Error("Request failed");
+  //   }
+
+  //   const data = await response.json();
+  //   return data;
+  // } catch (error) {
+  //   console.error(error);
+  // }
 };
 
 export const fetchNutritionData = async (searchQuery) => {
@@ -67,6 +70,11 @@ export const fetchNutritionData = async (searchQuery) => {
 
 // https://api.edamam.com/api/recipes/v2?type=public&q=beef&app_id=2120c2c1&app_key=9463be80aeaf7a080fb9f414625d6bf5&diet=balanced&health=dairy-free
 export const fetchRecipeData = async (searchQuery, diet = "", allergy = "") => {
+  console.log(recipeApiId)
+  console.log(recipeApiKey)
+  console.log(foodApiId)
+  console.log(foodApiKey)
+  
   try {
     let apiUrl = `https://api.edamam.com/api/recipes/v2?type=public&q=${searchQuery}&app_id=${recipeApiId}&app_key=${recipeApiKey}`;
     

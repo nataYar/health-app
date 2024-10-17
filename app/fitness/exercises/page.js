@@ -1,6 +1,5 @@
 "use client";
 import { useState, useEffect } from "react";
-import { useRouter } from 'next/navigation';
 
 import HorizontalBar from "./HorizontalBar";
 import { exerciseOptions, fetchData } from "@/app/utils/exerciseData";
@@ -11,33 +10,37 @@ const Exercise = () => {
   const [bodyParts, setBodyParts] = useState([]);
   const [bodyPart, setBodyPart] = useState('all');
   const [exercises, setExercises] = useState([])
-  const router = useRouter();  // Get access to the router
+
 
   useEffect(() => {
-    if (router.pathname === '/fitness/exercises') {
-      const fetchExercisesData = async () => {
-        const url = 'https://exercisedb.p.rapidapi.com/exercises/bodyPartList';
-
-        const bodyPartsData = await fetchData(url, exerciseOptions);
+    const fetchExercisesData = async () => {
+      try {
+        const partsUrl = 'https://exercisedb.p.rapidapi.com/exercises/bodyPartList';
+        const exercisesUrl = 'https://exercisedb.p.rapidapi.com/exercises?limit=1000&offset=0';
         
-        console.log(bodyPartsData);
+       
+        const exercisesData = await fetchData(exercisesUrl, exerciseOptions);
+        setExercises(exercisesData)
 
-        if (bodyPartsData.length > 0) {
-          setBodyParts(['all', ...bodyPartsData]);
-        }
-      };
-      fetchExercisesData();
-    }
+        const partsData = await fetchData(partsUrl, exerciseOptions);
+        const updatedPartsData = partsData.filter(part => part !== "neck"); //because there are no exercises for neck in Exersice Db
+        setBodyParts(['all', ...updatedPartsData]);
+        
+      } catch (error) {
+        console.error('Error fetching exercises data:', error);
+      }
+    };
+  
+    fetchExercisesData();
   }, []);
 
 const changeBodyPart = (el) => {
   setBodyPart(el)
 }
 
-useEffect(()=>{
-  console.log("bodyParts" + bodyParts)
-}, [bodyParts])
-
+const pickExercises = (el) => {
+  setExercises(el)
+}
   return (
         <Box sx={{ width: "100%" }}>
           <HorizontalBar
@@ -46,9 +49,8 @@ useEffect(()=>{
             bodyParts={bodyParts}
             handleBodyPartChange={changeBodyPart}
           /> 
-          {/* 
-          <Exercises bodyPart={bodyPart} exercises={exercises} setExercises={setExercises}/> */}
-        
+
+          <Exercises bodyPart={bodyPart} exercises={exercises} changeExercises={pickExercises}/>
         </Box>
 
 

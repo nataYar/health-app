@@ -1,6 +1,15 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  reactStrictMode: true,
+  env: {
+    NEXT_PUBLIC_EDAMAM_NUTRITION_ID: process.env.NEXT_PUBLIC_EDAMAM_NUTRITION_ID,
+    NEXT_PUBLIC_EDAMAM_NUTRITION_KEY: process.env.NEXT_PUBLIC_EDAMAM_NUTRITION_KEY,
+    NEXT_PUBLIC_EDAMAM_RECIPE_ID: process.env.NEXT_PUBLIC_EDAMAM_RECIPE_ID,
+    NEXT_PUBLIC_EDAMAM_RECIPE_KEY: process.env.NEXT_PUBLIC_EDAMAM_RECIPE_KEY,
+    NEXT_PUBLIC_EDAMAM_FOOD_ID: process.env.NEXT_PUBLIC_EDAMAM_FOOD_ID,
+    NEXT_PUBLIC_EDAMAM_FOOD_KEY: process.env.NEXT_PUBLIC_EDAMAM_FOOD_KEY,
+    NEXT_PUBLIC_RAPID_API_KEY: process.env.NEXT_PUBLIC_RAPID_API_KEY,
+  },
+};
 
-  };
-  
-  export default nextConfig;
+export default nextConfig;

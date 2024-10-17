@@ -27,9 +27,4 @@ const HorizontalBar = ({ data, bodyParts, handleBodyPartChange, bodyPart }) => {
   );
 } 
 
-
-
-
-
-
 export default HorizontalBar;

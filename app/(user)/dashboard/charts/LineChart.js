@@ -29,8 +29,6 @@ const LineChart = ({ logs, currentDate }) => {
   useEffect(() => {
     if (logs.length > 0) {
       // Map over logs to create label array for dates
-      console.log("Logs");
-      console.log(logs);
     
       const labels = logs
         .map((log) => {

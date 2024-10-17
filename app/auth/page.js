@@ -68,7 +68,6 @@ useEffect(()=>{
       
       if (userDoc.exists()) {
           const userData = userDoc.data(); // Get the user data from Firestore
-          console.log(userData)
           // Update your user state with email, id, and nickname
           updateUser({
               email: res.user.email,

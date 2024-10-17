@@ -25,11 +25,9 @@ export default function Dashboard() {
 
   useEffect(() => {
     const lastLoggedWeight = () => {
-      console.log(userLogs)
       for (let i = userLogs.length - 1; i >= 0; i--) {
         const log = userLogs[i];
         if (log.weight !== undefined && log.weight !== null) {
-          console.log(log.weight);
           return log.weight;
         }
       }
@@ -43,7 +41,6 @@ export default function Dashboard() {
     
     const firstLoggedWeight = userLogs.reduce((firstWeight, log) => {
       if (firstWeight === null && log.weight !== undefined && log.weight !== null) {
-        console.log(log.weight);
         return log.weight;
       }
       // Otherwise, keep the firstWeight unchanged
