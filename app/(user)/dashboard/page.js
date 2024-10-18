@@ -127,7 +127,7 @@ export default function Dashboard() {
         display="flex"
         flexDirection="row"
         flexWrap="wrap"
-        justifyContent="space-between"
+        justifyContent="flex-start"
         alignItems="flex-start"
         sx={{ gap: "25px", width: "100%"}}
       >

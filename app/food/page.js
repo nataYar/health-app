@@ -18,6 +18,8 @@ const Food = () => {
   const [date, setDate] = useState(null);
   const [foodItems, setFoodItems] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalText, setModalText] = useState(""); 
+
 
   useEffect(() => {
     if (data) {
@@ -47,14 +49,31 @@ const Food = () => {
   }, [data]);
 
   useEffect(() => {
+   console.log(foodItems)
+  }, [foodItems])
+
+  const removeFoodItem = (ind) => {
+    // Create a copy of the foodItems array
+    const updatedFoodItems = [...foodItems];
+    
+    // Remove the item at the given index
+    updatedFoodItems.splice(ind, 1);
+  
+    // Set the state with the updated array
+    setFoodItems(updatedFoodItems);
+  };
+
+
+  useEffect(() => {
     selectedDate ? setDate(selectedDate.format("YYYY-MM-DD")) : null;
   }, [selectedDate]);
 
   const searchRecipe = async (searchQuery) => {
     try {
-      setFoodItems([]);
+      
       const response = await fetchNutritionData(searchQuery);
       if (response !== undefined) {
+        console.log(response)
         setData(response);
       }
     } catch (error) {
@@ -85,6 +104,8 @@ const Food = () => {
         (totalCarbs, item) => totalCarbs + item.carbs,
         0
       );
+
+    console.log(sumOfCalories)
       saveLogFn(
         myUser.id,
         date,
@@ -93,9 +114,13 @@ const Food = () => {
         sumOfFats,
         sumOfCarbs
       );
+      setModalText("Nutruents logged!")
       setIsModalOpen(true);
       setSelectedDate(dayjs());
       setFoodItems([]);
+    } else if(!myUser.id) {
+      setModalText("Sign in to log please")
+      setIsModalOpen(true);
     }
   };
 
@@ -128,12 +153,13 @@ const Food = () => {
             selectedDate={selectedDate}
             setSelectedDate={setSelectedDate}
             handleLogData={logData}
+            handleDeleteItem={removeFoodItem}
           />
         ) : null}
       </Stack>
-      {/* {data ? <SideTable data={data} /> : null} */}
+      {data ? <SideTable data={data} /> : null}
       <PopupModal
-        text="food data logged!"
+        text={modalText}
         open={isModalOpen}
         onClose={handleCloseModal}
       />

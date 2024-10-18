@@ -36,8 +36,9 @@ export const fetchNutritionData = async (searchQuery) => {
         .map(str => str.trim().replace(/(^,)|(,$)/g, ''))
     : [searchQuery];
 
-    console.log(ingr)
+    
     const url = `https://api.edamam.com/api/nutrition-details?app_id=${nutritionApiId}&app_key=${nutritionApiKey}`;
+   
 
     const response = await fetch(url, {
       method: "POST",
@@ -64,17 +65,7 @@ export const fetchNutritionData = async (searchQuery) => {
   }
 };
 
-// https://api.edamam.com/api/recipes/v2?type=public&q=chicken&app_id=2120c2c1&app_key=9463be80aeaf7a080fb9f414625d6bf5
-
-// https://api.edamam.com/api/recipes/v2?type=public&q=beef&app_id=2120c2c1&app_key=9463be80aeaf7a080fb9f414625d6bf5&diet=Balanced&allergy=Fish-free
-
-// https://api.edamam.com/api/recipes/v2?type=public&q=beef&app_id=2120c2c1&app_key=9463be80aeaf7a080fb9f414625d6bf5&diet=balanced&health=dairy-free
 export const fetchRecipeData = async (searchQuery, diet = "", allergy = "") => {
-  console.log(recipeApiId)
-  console.log(recipeApiKey)
-  console.log(foodApiId)
-  console.log(foodApiKey)
-  
   try {
     let apiUrl = `https://api.edamam.com/api/recipes/v2?type=public&q=${searchQuery}&app_id=${recipeApiId}&app_key=${recipeApiKey}`;
     

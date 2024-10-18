@@ -97,14 +97,11 @@ export const saveLogFieldFn = async (userId, date, field, value) => {
     
     // Convert the Firestore Timestamp to a JavaScript Date
     const inputDate = date
-    // console.log(inputDate)
-    inputDate.setHours(0, 0, 0, 0); // Set time to midnight for comparison
 
     logsSnapshot.forEach((doc) => {
       const logData = doc.data();
       const logDate = logData.date.toDate(); // Assuming date is stored as a Firestore Timestamp
-      logDate.setHours(0, 0, 0, 0); // Set time to midnight for comparison
-
+      
       // Check if the log date matches the input date
       if (logDate.getTime() === inputDate.getTime()) {
         logIdToUpdate = doc.id; // Store the ID of the log to update
@@ -153,17 +150,16 @@ export const saveLogFn = async (
     let logIdToUpdate = null;
     
     // Convert the Firestore Timestamp to a JavaScript Date
-    const inputDate = date
-    // console.log(inputDate)
-    inputDate.setHours(0, 0, 0, 0); // Set time to midnight for comparison
-
+     // Convert the input date to a Firestore Timestamp
+     const inputDate = Timestamp.fromDate(new Date(date)); // Convert to Firestore Timestamp
+    console.log(inputDate)
+   
     logsSnapshot.forEach((doc) => {
       const logData = doc.data();
       const logDate = logData.date.toDate(); // Assuming date is stored as a Firestore Timestamp
-      logDate.setHours(0, 0, 0, 0); // Set time to midnight for comparison
 
       // Check if the log date matches the input date
-      if (logDate.getTime() === inputDate.getTime()) {
+      if (logDate.getTime() === inputDate.toDate().getTime()) {
         logIdToUpdate = doc.id; // Store the ID of the log to update
       }
     });
@@ -182,8 +178,9 @@ export const saveLogFn = async (
       // Log entry doesn't exist; create a new one
       const newLogRef = doc(logsRef); // Create a new log reference
       const newLogData = {
-        date: date, // Save the date as a Timestamp
+        date: inputDate, // Save the date as a Timestamp
         id: newLogRef.id,
+        userId: userId,
         calories: caloriesVal,
         protein: proteinVal,
         fats: fatsVal,

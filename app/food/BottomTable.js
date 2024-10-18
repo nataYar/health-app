@@ -1,4 +1,5 @@
 "use client";
+
 import {
   Button,
   Paper,
@@ -11,15 +12,9 @@ import {
   Box
 } from "@mui/material";
 import DatePickerContainer from "@/components/DatePickerContainer";
-import { useEffect } from "react";
+import CancelRoundedIcon from '@mui/icons-material/CancelRounded';
 
-const BottomTable = ({ foodItems, selectedDate, setSelectedDate, handleLogData }) => {
-  
-  const aggToLog = () => {
-    handleLogData()
-  }
-
-console.log(foodItems)
+const BottomTable = ({ foodItems, selectedDate, setSelectedDate, handleLogData, handleDeleteItem }) => {
 
   return (
     <Box
@@ -45,7 +40,7 @@ console.log(foodItems)
         <Button
           variant="contained"
           disabled={ foodItems.length==0}
-          onClick={aggToLog}
+          onClick={handleLogData}
           sx={{
             width: "auto",
             backgroundColor: "primary.main",
@@ -61,7 +56,7 @@ console.log(foodItems)
         sx={{
           width: "100%",
           borderRadius: "20px",
-          backgroundColor: "common.white",
+          backgroundColor: "green",
           color: "neutral.800",
         }}
       >
@@ -97,25 +92,38 @@ console.log(foodItems)
                 <b>Calories</b>
               </TableCell>
               <TableCell>
-                <b>Weight</b>
+                <b>Weight (g)</b>
               </TableCell>
             </TableRow>
           </TableHead>
 
           <TableBody>
-            {foodItems
+            { foodItems
               ? foodItems.map((el, ind) => (
-                  <TableRow
-                    key={ind}
+                <> 
+                <TableRow key={ind} sx={{
+                    
+                    borderRadius: "20px",
+                    color: "neutral.800",
+                  }}
                   >
-                    <TableCell>{el.qty}</TableCell>
-                    <TableCell>{el.unit}</TableCell>
-                    <TableCell>{el.food}</TableCell>
-                    <TableCell>{el.calories}</TableCell>
-                    <TableCell>{el.weight}</TableCell>
-                  </TableRow>
+                  <TableCell>{el.qty}</TableCell>
+                  <TableCell>{el.unit}</TableCell>
+                  <TableCell>{el.food}</TableCell>
+                  <TableCell>{el.calories}</TableCell>
+                  <TableCell>{el.weight}</TableCell>
+                  <CancelRoundedIcon 
+                  onClick ={() => handleDeleteItem(ind)}
+                  sx={{
+                    marginTop:"50%",
+                    
+                  }}/>
+                </TableRow>
+                
+                </>
+                 
                 ))
-              : null}
+              : null }
           </TableBody>
         </Table>
       </TableContainer>

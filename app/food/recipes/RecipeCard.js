@@ -100,7 +100,7 @@ const RecipeCard = ({
           <span
             style={{ color: "#1C2536", fontSize: "14px", paddingLeft: "7px" }}
           >
-            {Math.round(totalWeight)}
+            {Math.round(totalWeight)} g
           </span>
         </Typography>
         <Divider />
