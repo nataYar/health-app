@@ -25,6 +25,7 @@ export default function Dashboard() {
 
   useEffect(() => {
     const lastLoggedWeight = () => {
+      console.log(userLogs)
       for (let i = userLogs.length - 1; i >= 0; i--) {
         const log = userLogs[i];
         if (log.weight !== undefined && log.weight !== null) {
@@ -48,6 +49,27 @@ export default function Dashboard() {
     }, null);
    
     setWeightData({ lastWeight: lastWeight, firstWeight: firstLoggedWeight });
+
+
+
+    // CALORIES consumed today
+    // Function to format the date to 'YYYY-MM-DD'
+    const formatDate = (date) => {
+      return date.toISOString().split('T')[0]; // Extract 'YYYY-MM-DD' part from Date object
+    };
+
+    const logToday = userLogs.filter(log => {
+      const logDate = log.date;
+      console.log(logDate) //convert firebase Timestamp to JS date
+      return logDate === currentDate;
+    });
+
+    if (logToday.length > 0) {
+      // Check if logToday array is not empty before accessing its properties
+      setCaloriesToday(logToday[0].calories)
+    } 
+    console.log(logToday)
+    console.log(caloriesToday)
 
     //   // MINUTES
     // if (userExercises.length > 0){
@@ -74,15 +96,6 @@ export default function Dashboard() {
     // }
   }, [userLogs] )
 
-  //   // CALORIES consumed today
-  //   const logToday = userLogs.filter(day => day.date === currentDate)
-  //   if (logToday.length > 0) {
-  //     // Check if logToday array is not empty before accessing its properties
-  //     setCaloriesToday(logToday[0].calories)
-  //   } else {
-  //     return null;
-  //   }
- 
 
   return (
     <Box

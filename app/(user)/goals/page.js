@@ -68,6 +68,9 @@ const Goals = () => {
 
   return (
     <>
+    {currentWeightGoal || currentCaloriesGoal &&
+         
+        
       <Stack
         direction="column"
         alignItems="flex-start"
@@ -82,29 +85,26 @@ const Goals = () => {
         }}
       >
         <Typography
-          variant="h5" gutterBottom
-          sx={{ mb: "20px", textAlign: "center" }}
-        >
-          My current goals
-        </Typography>
-        {currentCaloriesGoal ? (
+            variant="h5" gutterBottom
+            sx={{ mb: "20px", textAlign: "center" }}
+          >
+            My current goals
+          </Typography>
+        
+        
+       
+        {currentCaloriesGoal && (
           <Typography variant="subtitle1" sx={{ color: neutral[600] }}>
              <span style={{ color: theme.palette.primary.main, fontSize:"20px" }}>{currentCaloriesGoal}</span> calories daily
           </Typography>
-        ) : null}
-        {currentWeightGoal ? (
+        )}
+        {currentWeightGoal && (
           <Typography variant="subtitle1" sx={{ color: neutral[600] }}>
             <span style={{ color: theme.palette.primary.main, fontSize:"20px"  }}>{currentWeightGoal} </span>weight
           </Typography>
-        ) : null}
-
-        <PopupModal
-          text={modalText}
-          open={isModalOpen}
-          onClose={handleCloseModal}
-        />
+        )}
       </Stack>
-
+}
       <Stack
         direction="column"
         alignItems="flex-start"

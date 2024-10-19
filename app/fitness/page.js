@@ -33,6 +33,7 @@ const LogExercise = () => {
     if(myUser.id && (exercise || customExercise)  && duration && selectedDate ){
       const ex = exercise !== "Custom" ? exercise : customExercise;
       saveExerciseFn(myUser.id, ex, duration, selectedDate.format("YYYY-MM-DD"));
+
       clearInput(); // Clear input fields
     } else if (!myUser.id && (exercise || customExercise) && duration && selectedDate ) {
       setModalText("Please sign-in")

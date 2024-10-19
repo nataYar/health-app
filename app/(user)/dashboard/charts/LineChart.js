@@ -33,9 +33,9 @@ const LineChart = ({ logs, currentDate }) => {
       const labels = logs
         .map((log) => {
           // Convert Firestore Timestamp to JavaScript Date object
-          const logDate = dayjs(log.date.toDate());
+          const logDate = dayjs(log.date); // Convert the string to a Day.js object
           if (log.weight !== null && log.weight !== undefined) {
-            return logDate.format('MMMM D');
+            return logDate.format('MMMM D'); // Format as "Month D"
           }
           return null;
         })

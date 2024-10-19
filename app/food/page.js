@@ -105,7 +105,6 @@ const Food = () => {
         0
       );
 
-    console.log(sumOfCalories)
       saveLogFn(
         myUser.id,
         date,

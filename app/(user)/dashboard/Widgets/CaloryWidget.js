@@ -8,7 +8,7 @@ import RamenDiningRoundedIcon from "@mui/icons-material/RamenDiningRounded";
 import { extraColors, neutral } from "@/app/theme/colors";
 
 const CaloryWidget = ({ currentCaloriesGoal, caloriesToday }) => {
-  const { myUser, updateUser } = useContext(UserContext);
+  const { myUser, updateUser, currentDate } = useContext(UserContext);
 
   let percentConsumed;
   if (currentCaloriesGoal && caloriesToday) {
@@ -53,8 +53,8 @@ const CaloryWidget = ({ currentCaloriesGoal, caloriesToday }) => {
         >
           {caloriesToday}
           <span style={{ fontSize: "14px", color: neutral[500] }}>
-            {" "}
-            consumed
+            {" "} calories
+            consumed today
           </span>
         </Typography>
       );
@@ -74,7 +74,6 @@ const CaloryWidget = ({ currentCaloriesGoal, caloriesToday }) => {
         <span style={{ fontSize: "14px", color: neutral[500], lineHeight:"14px" }}>
           Add consumed food to display calories
         </span>
-        <Divider />
         </>
         
       );
@@ -111,7 +110,7 @@ const CaloryWidget = ({ currentCaloriesGoal, caloriesToday }) => {
           </Avatar>
         </Grid2>
       </Grid2>
-
+      <Divider sx={{ mt: 1.25, width: "100%" }} />
       {currentCaloriesGoal ? (
         <Grid2 container direction="column">
           <Grid2 item sx={{ mb: 1.25 }}>

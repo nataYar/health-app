@@ -26,20 +26,21 @@ const UserProvider = ({ children }) => {
   );
   const [currentCaloriesGoal, setCurrentCaloriesGoal] = useState(null);
   const [currentWeightGoal, selCurrentWeightGoal] = useState(null);
-  const currentDate = dayjs().toDate();
-
-//  useEffect(() => {
-//   console.log("User");
-//    console.log(myUser);
-//   }, [myUser]);
-
+  const currentDate = dayjs().format("YYYY-MM-DD") // example '2024-10-18' 
   
+ 
+  useEffect(() => {
+   console.log("Goals");
+   console.log(currentDate)
+   console.log("currentCaloriesGoal "+currentCaloriesGoal);
+   console.log("current weight Goal "+currentWeightGoal);
+  }, [currentWeightGoal, currentCaloriesGoal]);
 
-//    useEffect(() => {
-//     console.log("Exercises");
-//     console.log(userExercises);
-//    }, [userExercises]);
 
+  //    useEffect(() => {
+  //     console.log("Exercises");
+  //     console.log(userExercises);
+  //    }, [userExercises]);
 
   //  Populate Logs and Exercises
    useEffect(() => {
@@ -55,7 +56,7 @@ const UserProvider = ({ children }) => {
       }));
       // Sort logs by date using dayjs
       const sortedLogsArray = logsArray.sort((a, b) => 
-        dayjs(a.date.toDate()).isBefore(dayjs(b.date.toDate())) ? -1 : 1
+        dayjs(a.date).isBefore(dayjs(b.date)) ? -1 : 1
       );
 
       setUserLogs(sortedLogsArray); // Update the state with the latest logs
@@ -65,6 +66,7 @@ const UserProvider = ({ children }) => {
         return; // Exit early if no logs
       }
   
+      // Iterate through Exercises 
       const allExercises = []; 
   
       // Fetch exercises for each log

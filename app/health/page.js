@@ -10,7 +10,7 @@ import { collection, doc, onSnapshot } from "firebase/firestore";
 import { db } from "../firebase"; // Make sure to import your Fir
 
 const Health = () => {
-  const { myUser, currentDate } = useContext(UserContext);
+  const { myUser } = useContext(UserContext);
   const [weightLogs, setWeightLogs] = useState([]);
 
   useEffect(() => {
@@ -26,10 +26,11 @@ const Health = () => {
       }));
       // Sort logs by date
       const sortedArray = weightArray.sort((a, b) => 
-        dayjs(a.date.toDate()).isBefore(dayjs(b.date.toDate())) ? -1 : 1
+        dayjs(a.date).isBefore(dayjs(b.date)) ? 1 : -1
       );
 
-      setWeightLogs(sortedArray); // Update the state with the latest logs
+      setWeightLogs(sortedArray); 
+      // Update the state with the latest logs
 
       if (weightArray.length === 0) {
         console.log("No logs found for this user.");
@@ -40,10 +41,10 @@ const Health = () => {
     });
 
     return () => unsubscribe();
-  }, [myUser]);
+  }, [myUser, weightLogs]);
 
 
-  useEffect(() => {console.log(weightLogs)}, [weightLogs])
+  // useEffect(() => {console.log(weightLogs)}, [weightLogs])
 
   return (
     <>
@@ -67,10 +68,14 @@ const Health = () => {
       borderRadius="20px"
       backgroundColor="white"
       sx={{
-        width: { xs: "90%", md: "35%" },
+        width: { xs: "100%", md: "35%" },
+        
       }}
     >
-      <Typography variant="h5" sx={{ mb: "20px", textAlign: "center" }}>
+      <Typography variant="h5" sx={{ 
+        mb: "20px", 
+        textAlign: "center" 
+        }}>
         Weight Logs
       </Typography>
       <List>
@@ -78,7 +83,7 @@ const Health = () => {
           <ListItem key={log.id}>
             <ListItemText
               primary={`Weight: ${log.weight} lbs`}
-              secondary={`Date: ${dayjs(log.date.toDate()).format("MMMM D, YYYY")}`}
+              secondary={`Date: ${log.date}`}
             />
           </ListItem>
         ))}

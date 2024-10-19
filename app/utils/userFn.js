@@ -1,6 +1,15 @@
 import { db } from "../firebase";
-import { doc, collection, getDocs, setDoc, Timestamp, onSnapshot  } from "firebase/firestore"; 
-import Exercises from '../fitness/exercises/Exercises';
+import {
+  doc,
+  collection,
+  getDocs,
+  setDoc,
+  Timestamp,
+  onSnapshot,
+  query,
+  where,
+} from "firebase/firestore";
+import Exercises from "../fitness/exercises/Exercises";
 import dayjs from "dayjs";
 
 // export const createUserFn = async (nickname, email) => {
@@ -29,7 +38,6 @@ import dayjs from "dayjs";
 //   }
 // };
 
-
 // export const getUserByEmailFn = async (email) => {
 //   try {
 //     console.log(email);
@@ -40,7 +48,6 @@ import dayjs from "dayjs";
 //     console.log("Error fetching user by email:", error);
 //   }
 // };
-
 
 // export const createUserFn = async (nickname, email) => {
 //   try {
@@ -61,7 +68,7 @@ import dayjs from "dayjs";
 export const getUserByEmail = async (email) => {
   try {
     // Get a specific item
-    console.log("from getUserByEmail")
+    console.log("from getUserByEmail");
     // const oneUser = await client.graphql({
     //   query: getUser,
     //   variables: { email: email }
@@ -78,7 +85,7 @@ export const getUserByEmail = async (email) => {
 //   try {
 //     console.log(email)
 //     const user = await DataStore.query(User, (p) => p.email.eq(email));
-    
+
 //     console.log(user[0])
 //     return user[0];
 //   } catch (error) {
@@ -88,22 +95,24 @@ export const getUserByEmail = async (email) => {
 // };
 export const saveLogFieldFn = async (userId, date, field, value) => {
   try {
+    console.log(date);
     const userDocRef = doc(db, "users", userId);
     const logsRef = collection(userDocRef, "Logs");
-    
+
     // Query to check if a log with the same date already exists
     const logsSnapshot = await getDocs(logsRef);
     let logIdToUpdate = null;
-    
+
     // Convert the Firestore Timestamp to a JavaScript Date
-    const inputDate = date
+    const inputDate = Timestamp.fromDate(new Date(date));
+    console.log(inputDate);
 
     logsSnapshot.forEach((doc) => {
       const logData = doc.data();
-      const logDate = logData.date.toDate(); // Assuming date is stored as a Firestore Timestamp
-      
+      const logDate = logData.date;
+      console.log(logDate);
       // Check if the log date matches the input date
-      if (logDate.getTime() === inputDate.getTime()) {
+      if (logDate === inputDate) {
         logIdToUpdate = doc.id; // Store the ID of the log to update
       }
     });
@@ -111,10 +120,14 @@ export const saveLogFieldFn = async (userId, date, field, value) => {
     if (logIdToUpdate) {
       // Log entry exists; update the specific field
       const logDocRef = doc(logsRef, logIdToUpdate);
-      await setDoc(logDocRef, { 
-        [field]: value,
-        id: logDocRef.id 
-      }, { merge: true });
+      await setDoc(
+        logDocRef,
+        {
+          [field]: value,
+          id: logDocRef.id,
+        },
+        { merge: true }
+      );
       console.log(`Updated field ${field} in log ${logIdToUpdate}`);
     } else {
       // Log entry doesn't exist; create a new one
@@ -122,7 +135,7 @@ export const saveLogFieldFn = async (userId, date, field, value) => {
       const newLogData = {
         date: date, // Save the date as a Timestamp
         [field]: value,
-        id: newLogRef.id 
+        id: newLogRef.id,
       };
       await setDoc(newLogRef, newLogData);
       console.log(`Created new log for date ${date}`);
@@ -131,7 +144,6 @@ export const saveLogFieldFn = async (userId, date, field, value) => {
     console.error("Error saving/updating log field:", error);
   }
 };
-
 
 export const saveLogFn = async (
   userId,
@@ -144,116 +156,126 @@ export const saveLogFn = async (
   try {
     const userDocRef = doc(db, "users", userId);
     const logsRef = collection(userDocRef, "Logs");
-    
+
     // Query to check if a log with the same date already exists
     const logsSnapshot = await getDocs(logsRef);
     let logIdToUpdate = null;
-    
+
     // Convert the Firestore Timestamp to a JavaScript Date
-     // Convert the input date to a Firestore Timestamp
-     const inputDate = Timestamp.fromDate(new Date(date)); // Convert to Firestore Timestamp
-    console.log(inputDate)
-   
+    // Convert the input date to a Firestore Timestamp
+    //  const inputDate = Timestamp.fromDate(new Date(date)); // Convert to Firestore Timestamp
+    console.log(date);
+    const inputDate = Timestamp.fromDate(new Date(date));
+    console.log(inputDate);
+
     logsSnapshot.forEach((doc) => {
       const logData = doc.data();
-      const logDate = logData.date.toDate(); // Assuming date is stored as a Firestore Timestamp
-
+      // const logDate = logData.date.toDate(); // Assuming date is stored as a Firestore Timestamp
+      const logDate = logData.date;
+      console.log(logDate);
       // Check if the log date matches the input date
-      if (logDate.getTime() === inputDate.toDate().getTime()) {
-        logIdToUpdate = doc.id; // Store the ID of the log to update
-      }
+      // if (logDate.getTime() === inputDate.toDate().getTime()) {
+      //   logIdToUpdate = doc.id; // Store the ID of the log to update
+      // }
     });
-    if (logIdToUpdate) {
-      // Log entry exists; update the specific field
-      const logDocRef = doc(logsRef, logIdToUpdate);
-      await setDoc(logDocRef, { 
-        id: logDocRef.id,
-        calories: (logData.calories || 0) + caloriesVal,
-        protein:  (logData.protein || 0) + proteinVal,
-        fats:  (logData.fats || 0) + fatsVal,
-        carbs:  (logData.carbs || 0) + carbsVal
-      }, { merge: true });
-      console.log(`Updated field ${field} in log ${logIdToUpdate}`);
-    } else {
-      // Log entry doesn't exist; create a new one
-      const newLogRef = doc(logsRef); // Create a new log reference
-      const newLogData = {
-        date: inputDate, // Save the date as a Timestamp
-        id: newLogRef.id,
-        userId: userId,
-        calories: caloriesVal,
-        protein: proteinVal,
-        fats: fatsVal,
-        carbs: carbsVal,
-      };
-      await setDoc(newLogRef, newLogData);
-      console.log(`Created new log for date ${date}`);
-    }
+    //   if (logIdToUpdate) {
+    //     // Log entry exists; update the specific field
+    //     const logDocRef = doc(logsRef, logIdToUpdate);
+    //     await setDoc(logDocRef, {
+    //       id: logDocRef.id,
+    //       calories: (logData.calories || 0) + caloriesVal,
+    //       protein:  (logData.protein || 0) + proteinVal,
+    //       fats:  (logData.fats || 0) + fatsVal,
+    //       carbs:  (logData.carbs || 0) + carbsVal
+    //     }, { merge: true });
+    //     console.log(`Updated field ${field} in log ${logIdToUpdate}`);
+    //   } else {
+    //     // Log entry doesn't exist; create a new one
+    //     const newLogRef = doc(logsRef); // Create a new log reference
+    //     const newLogData = {
+    //       date: inputDate, // Save the date as a Timestamp
+    //       id: newLogRef.id,
+    //       userId: userId,
+    //       calories: caloriesVal,
+    //       protein: proteinVal,
+    //       fats: fatsVal,
+    //       carbs: carbsVal,
+    //     };
+    //     await setDoc(newLogRef, newLogData);
+    //     console.log(`Created new log for date ${date}`);
+    //   }
   } catch (error) {
     console.log("Error saving new user:", error);
     console.log(error);
   }
 };
 
-
 export const saveExerciseFn = async (userId, exercise, duration, date) => {
   try {
-    console.log(userId, exercise, duration, date)
-    // await DataStore.save(
-    //   new Exercise({
-    //     date: date,
-    //     userID: userId,
-    //     duration: duration,
-    //     exercise: exercise,
-    //   })
-    // );
+    const userDocRef = doc(db, "users", userId);
+    const logsRef = collection(userDocRef, "Logs");
 
-    // const userDocRef = doc(db, "users", userId);
-    // const logsRef = collection(userDocRef, "Logs");
-    
-    // // Query to check if a log with the same date already exists
-    // const logsSnapshot = await getDocs(logsRef);
-    // let logIdToUpdate = null;
-    
-    // // Convert the Firestore Timestamp to a JavaScript Date
-    // const inputDate = date
-    // // console.log(inputDate)
-    // inputDate.setHours(0, 0, 0, 0); // Set time to midnight for comparison
+    // Query to check if a log with the same date already exists
+    const logsSnapshot = await getDocs(logsRef);
+    let logIdToUpdate = null;
 
-    // logsSnapshot.forEach((doc) => {
-    //   const logData = doc.data();
-    //   const logDate = logData.date.toDate(); // Assuming date is stored as a Firestore Timestamp
-    //   logDate.setHours(0, 0, 0, 0); // Set time to midnight for comparison
-    //   // console.log(logDate.setHours(0, 0, 0, 0))
+    // Convert the Firestore Timestamp to a JavaScript Date
+    const inputDate = date;
 
-    //   // Check if the log date matches the input date
-    //   if (logDate.getTime() === inputDate.getTime()) {
-    //     logIdToUpdate = doc.id; // Store the ID of the log to update
-    //   }
-    // });
+    logsSnapshot.forEach((doc) => {
+      const logData = doc.data();
+      const logDate = logData.date;
 
-    // if (logIdToUpdate) {
-    //   // Log entry exists; update the specific field
-    //   const logDocRef = doc(logsRef, logIdToUpdate);
-    //   const exRef = doc(logDocRef, )
-    //   await setDoc(logDocRef, { 
-    //   [field]: value,
-    //   id: logDocRef.id 
-    //   }, 
+      // Check if the log date matches the input date
+      if (logDate === inputDate) {
+        logIdToUpdate = doc.id; // Store the ID of the log to update
+      }
+    });
 
-    //   { merge: true });
-    //     console.log(`Updated field ${field} in log ${logIdToUpdate}`);
-    //   } else {
-    //     // Log entry doesn't exist; create a new one
-    //     const newLogRef = doc(logsRef); // Create a new log reference
-    //     const newLogData = {
-    //       date: date, // Save the date as a Timestamp
-    //       [field]: value,
-    //       id: newLogRef.id 
-    //     };
-    //     await setDoc(newLogRef, newLogData);
-    //     console.log(`Created new log for date ${date}`);
-    //   }
+    if (logIdToUpdate) {
+      const logDocRef = doc(logsRef, logIdToUpdate);
+      const exercisesRef = collection(logDocRef, "Exercises");
+
+      const newExerciseRef = doc(exercisesRef); // Generate a new document reference
+
+      // Set the exercise document
+      await setDoc(newExerciseRef, {
+        exercise: exercise,
+        userID: userId,
+        duration: duration,
+        date: date,
+        id: newExerciseRef.id, // Include the new document ID
+      });
+
+      console.log(
+        `Added new exercise: ${exercise} with ID: ${newExerciseRef.id}`
+      );
+    } else {
+      // Log doesn't exist
+      const newLogRef = doc(logsRef); // Create a new log reference
+      await setDoc(
+        newLogRef,
+        {
+          id: newLogRef.id,
+          date: date,
+          userID: userId,
+        },
+        { merge: true }
+      );
+      const exercisesRef = collection(newLogRef, "Exercises");
+      const newExerciseRef = doc(exercisesRef);
+      const newLogData = {
+        date: date,
+        userID: userId,
+        duration: duration,
+        exercise: exercise,
+        id: newExerciseRef.id,
+      };
+      await setDoc(newExerciseRef, newLogData);
+      console.log(
+        `Added new exercise: ${exercise} with ID: ${newExerciseRef.id}`
+      );
+    }
   } catch (error) {
     console.log("Error saving new user:", error);
     console.log(error);

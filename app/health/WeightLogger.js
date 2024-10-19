@@ -40,6 +40,8 @@ const WeightLogger = () => {
     }
   }, [selectedDate, currentDate]); 
 
+
+  useEffect(()=>{console.log(selectedDate)}, [selectedDate])
   const handleCloseModal = () => {
     setIsModalOpen(false);
   };
@@ -53,7 +55,8 @@ const WeightLogger = () => {
   };
 
   const passWeightData = async () => {
-    saveLogFieldFn(myUser.id, weightEntry.date, 'weight', weightEntry.weight) 
+    const formattedDate = dayjs(weightEntry.date).format('YYYY-MM-DD');
+    saveLogFieldFn(myUser.id, formattedDate, 'weight', weightEntry.weight) 
     setModalText("Weight logged!")
     setIsModalOpen(true);
     setSelectedDate(null)
@@ -81,7 +84,7 @@ const WeightLogger = () => {
       borderRadius="20px"
       backgroundColor="white"
       sx={{
-        width: { xs: "90%", md: "35%" },
+        width: { xs: "100%", md: "35%" },
       }}
     >
       <Typography
