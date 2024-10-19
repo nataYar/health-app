@@ -95,7 +95,7 @@ export const getUserByEmail = async (email) => {
 // };
 export const saveLogFieldFn = async (userId, date, field, value) => {
   try {
-    console.log(date);
+    // console.log(userId, date, field, value);
     const userDocRef = doc(db, "users", userId);
     const logsRef = collection(userDocRef, "Logs");
 
@@ -103,16 +103,11 @@ export const saveLogFieldFn = async (userId, date, field, value) => {
     const logsSnapshot = await getDocs(logsRef);
     let logIdToUpdate = null;
 
-    // Convert the Firestore Timestamp to a JavaScript Date
-    const inputDate = Timestamp.fromDate(new Date(date));
-    console.log(inputDate);
-
     logsSnapshot.forEach((doc) => {
       const logData = doc.data();
       const logDate = logData.date;
-      console.log(logDate);
       // Check if the log date matches the input date
-      if (logDate === inputDate) {
+      if (logDate == date) {
         logIdToUpdate = doc.id; // Store the ID of the log to update
       }
     });
@@ -128,7 +123,6 @@ export const saveLogFieldFn = async (userId, date, field, value) => {
         },
         { merge: true }
       );
-      console.log(`Updated field ${field} in log ${logIdToUpdate}`);
     } else {
       // Log entry doesn't exist; create a new one
       const newLogRef = doc(logsRef); // Create a new log reference
@@ -138,10 +132,10 @@ export const saveLogFieldFn = async (userId, date, field, value) => {
         id: newLogRef.id,
       };
       await setDoc(newLogRef, newLogData);
-      console.log(`Created new log for date ${date}`);
+      console.log(`Created new log ${date}`);
     }
   } catch (error) {
-    console.error("Error saving/updating log field:", error);
+    console.error("Error saving log ", error);
   }
 };
 

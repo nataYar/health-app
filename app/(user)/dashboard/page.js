@@ -60,7 +60,6 @@ export default function Dashboard() {
 
     const logToday = userLogs.filter(log => {
       const logDate = log.date;
-      console.log(logDate) //convert firebase Timestamp to JS date
       return logDate === currentDate;
     });
 
@@ -68,8 +67,6 @@ export default function Dashboard() {
       // Check if logToday array is not empty before accessing its properties
       setCaloriesToday(logToday[0].calories)
     } 
-    console.log(logToday)
-    console.log(caloriesToday)
 
     //   // MINUTES
     // if (userExercises.length > 0){

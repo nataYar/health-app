@@ -25,9 +25,11 @@ const Health = () => {
         ...doc.data()
       }));
       // Sort logs by date
-      const sortedArray = weightArray.sort((a, b) => 
+      const sortedArray = weightArray
+      .filter(log => log.weight !=undefined || log.weight != null)
+      .sort((a, b) => 
         dayjs(a.date).isBefore(dayjs(b.date)) ? 1 : -1
-      );
+      )
 
       setWeightLogs(sortedArray); 
       // Update the state with the latest logs

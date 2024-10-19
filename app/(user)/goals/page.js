@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { UserContext } from "../../context/userProvider";
 import { Stack, TextField, Button, Typography, Paper, useTheme } from "@mui/material";
 import PopupModal from "../../../components/PopupModal";
@@ -23,8 +23,15 @@ const Goals = () => {
   };
 
   const passGoalsData = async () => {
-    goals.caloriesGoal ? saveLogFieldFn(myUser.id, currentDate, "caloriesGoal", goals.caloriesGoal): saveLogFieldFn(myUser.id, currentDate, "weightGoal", goals.weightGoal);
-    
+    if(goals.caloriesGoal && !goals.weightGoal) {
+      saveLogFieldFn(myUser.id, currentDate, "caloriesGoal", goals.caloriesGoal)
+    } else if (goals.weightGoal && !goals.caloriesGoal){
+      saveLogFieldFn(myUser.id, currentDate, "weightGoal", goals.weightGoal);
+    }  else if (goals.caloriesGoal && goals.weightGoal) {
+      saveLogFieldFn(myUser.id, currentDate, "weightGoal", goals.weightGoal);
+      saveLogFieldFn(myUser.id, currentDate, "caloriesGoal", goals.caloriesGoal)
+      
+    }
     setIsModalOpen(true);
     setGoals({
       caloriesGoal: null,
@@ -43,7 +50,9 @@ const Goals = () => {
       setIsModalOpen(true);
     }
   };
-
+ 
+  useEffect(() => {console.log(currentWeightGoal)}, [goals])
+  useEffect(() => {console.log(currentCaloriesGoal)}, [goals])
   const handleGoalChange = (event, type) => {
     switch (type) {
       case "weight":
@@ -52,6 +61,7 @@ const Goals = () => {
           ...prevEntry,
           weightGoal: wVal,
         }));
+
         break;
 
       case "calories":
@@ -68,7 +78,7 @@ const Goals = () => {
 
   return (
     <>
-    {currentWeightGoal || currentCaloriesGoal &&
+    
          
         
       <Stack
@@ -91,8 +101,12 @@ const Goals = () => {
             My current goals
           </Typography>
         
-        
-       
+        {!currentCaloriesGoal && !currentWeightGoal ? 
+          <Typography variant="subtitle1" sx={{ color: neutral[600] }}>
+              nothing logged yet
+          </Typography>
+          :null
+        }
         {currentCaloriesGoal && (
           <Typography variant="subtitle1" sx={{ color: neutral[600] }}>
              <span style={{ color: theme.palette.primary.main, fontSize:"20px" }}>{currentCaloriesGoal}</span> calories daily
@@ -104,7 +118,7 @@ const Goals = () => {
           </Typography>
         )}
       </Stack>
-}
+
       <Stack
         direction="column"
         alignItems="flex-start"
