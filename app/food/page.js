@@ -48,9 +48,9 @@ const Food = () => {
     }
   }, [data]);
 
-  useEffect(() => {
-   console.log(foodItems)
-  }, [foodItems])
+  // useEffect(() => {
+  //  console.log(selectedDate)
+  // }, [selectedDate])
 
   const removeFoodItem = (ind) => {
     // Create a copy of the foodItems array
@@ -104,7 +104,7 @@ const Food = () => {
         (totalCarbs, item) => totalCarbs + item.carbs,
         0
       );
-
+      
       saveLogFn(
         myUser.id,
         date,

@@ -69,28 +69,28 @@ export default function Dashboard() {
     } 
 
     //   // MINUTES
-    // if (userExercises.length > 0){
-    //   const totalDuration = userExercises.reduce((acc, exercise) => acc + parseInt(exercise.duration), 0);
-    //   const averageDuration = totalDuration / userExercises.length;
+    if (userExercises.length > 0){
+      const totalDuration = userExercises.reduce((acc, exercise) => acc + parseInt(exercise.duration), 0);
+      const averageDuration = totalDuration / userExercises.length;
 
-    //   const exToday = userExercises.filter(day => day.date === currentDate)
-    //   if (exToday.length > 0) {
-    //     // Check if logToday array is not empty before accessing its properties
-    //     setExercisesDuration({duration: exToday[0].duration, average: averageDuration})
-    //   } else  if((exToday.length == 0)){
-    //     const lastLoggedEx = () => {
-    //       for (let i = userExercises.length - 1; i >= 0; i--) {
-    //         const log = userExercises[i];
-    //         if (log.duration !== null) {
-    //           return log;
-    //         }
-    //       }
-    //     };
-    //     const lastDur = lastLoggedEx();
-    //     lastDur ? 
-    //     setExercisesDuration({duration: lastDur.duration, average: averageDuration, lastDate: lastDur.date}) : null
-    //   }
-    // }
+      const exToday = userExercises.filter(day => day.date === currentDate)
+      if (exToday.length > 0) {
+        // Check if logToday array is not empty before accessing its properties
+        setExercisesDuration({duration: exToday[0].duration, average: averageDuration})
+      } else  if((exToday.length == 0)){
+        const lastLoggedEx = () => {
+          for (let i = userExercises.length - 1; i >= 0; i--) {
+            const log = userExercises[i];
+            if (log.duration !== null) {
+              return log;
+            }
+          }
+        };
+        const lastDur = lastLoggedEx();
+        lastDur ? 
+        setExercisesDuration({duration: lastDur.duration, average: averageDuration, lastDate: lastDur.date}) : null
+      }
+    }
   }, [userLogs] )
 
 

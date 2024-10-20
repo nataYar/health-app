@@ -4,7 +4,7 @@ import {
   collection,
   getDocs,
   setDoc,
-  Timestamp,
+  getDoc,
   onSnapshot,
   query,
   where,
@@ -148,56 +148,51 @@ export const saveLogFn = async (
   carbsVal
 ) => {
   try {
-    const userDocRef = doc(db, "users", userId);
-    const logsRef = collection(userDocRef, "Logs");
+   const userDocRef = doc(db, "users", userId);
+   const logsRef = collection(userDocRef, "Logs");
 
-    // Query to check if a log with the same date already exists
-    const logsSnapshot = await getDocs(logsRef);
-    let logIdToUpdate = null;
+   // Query to check if a log with the same date already exists
+   const logsSnapshot = await getDocs(logsRef);
+   let logIdToUpdate = null;
 
-    // Convert the Firestore Timestamp to a JavaScript Date
-    // Convert the input date to a Firestore Timestamp
-    //  const inputDate = Timestamp.fromDate(new Date(date)); // Convert to Firestore Timestamp
-    console.log(date);
-    const inputDate = Timestamp.fromDate(new Date(date));
-    console.log(inputDate);
-
-    logsSnapshot.forEach((doc) => {
-      const logData = doc.data();
-      // const logDate = logData.date.toDate(); // Assuming date is stored as a Firestore Timestamp
-      const logDate = logData.date;
-      console.log(logDate);
-      // Check if the log date matches the input date
-      // if (logDate.getTime() === inputDate.toDate().getTime()) {
-      //   logIdToUpdate = doc.id; // Store the ID of the log to update
-      // }
-    });
-    //   if (logIdToUpdate) {
-    //     // Log entry exists; update the specific field
-    //     const logDocRef = doc(logsRef, logIdToUpdate);
-    //     await setDoc(logDocRef, {
-    //       id: logDocRef.id,
-    //       calories: (logData.calories || 0) + caloriesVal,
-    //       protein:  (logData.protein || 0) + proteinVal,
-    //       fats:  (logData.fats || 0) + fatsVal,
-    //       carbs:  (logData.carbs || 0) + carbsVal
-    //     }, { merge: true });
-    //     console.log(`Updated field ${field} in log ${logIdToUpdate}`);
-    //   } else {
-    //     // Log entry doesn't exist; create a new one
-    //     const newLogRef = doc(logsRef); // Create a new log reference
-    //     const newLogData = {
-    //       date: inputDate, // Save the date as a Timestamp
-    //       id: newLogRef.id,
-    //       userId: userId,
-    //       calories: caloriesVal,
-    //       protein: proteinVal,
-    //       fats: fatsVal,
-    //       carbs: carbsVal,
-    //     };
-    //     await setDoc(newLogRef, newLogData);
-    //     console.log(`Created new log for date ${date}`);
-    //   }
+   logsSnapshot.forEach((doc) => {
+     const logData = doc.data();
+     const logDate = logData.date;
+     // Check if the log date matches the input date
+     if (logDate == date) {
+       logIdToUpdate = doc.id; // Store the ID of the log to update
+     }
+   });
+      if (logIdToUpdate) {
+        // Log entry exists; update the specific field
+        const logDocRef = doc(logsRef, logIdToUpdate);
+        const currentLogSnapshot = await getDoc(logDocRef);
+        const currentLogData = currentLogSnapshot.data() || {};
+  
+        // Update the specific fields
+        await setDoc(logDocRef, {
+          id: logDocRef.id,
+          calories: (currentLogData.calories || 0) + caloriesVal,
+          protein: (currentLogData.protein || 0) + proteinVal,
+          fats: (currentLogData.fats || 0) + fatsVal,
+          carbs: (currentLogData.carbs || 0) + carbsVal
+        }, { merge: true });
+        console.log(`Updated log ${logIdToUpdate}`);
+      } else {
+        // Log entry doesn't exist; create a new one
+        const newLogRef = doc(logsRef); // Create a new log reference
+        const newLogData = {
+          date: date, // Save the date as a Timestamp
+          id: newLogRef.id,
+          userId: userId,
+          calories: caloriesVal,
+          protein: proteinVal,
+          fats: fatsVal,
+          carbs: carbsVal,
+        };
+        await setDoc(newLogRef, newLogData);
+        console.log(`Created new log for date ${date}`);
+      }
   } catch (error) {
     console.log("Error saving new user:", error);
     console.log(error);

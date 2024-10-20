@@ -30,7 +30,6 @@ export const fetchFoodData = async (searchQuery) => {
 
 export const fetchNutritionData = async (searchQuery) => {
   try {
-    console.log(searchQuery)
     const ingr = searchQuery.includes("\n")
     ? searchQuery.trim().split("\n")
         .map(str => str.trim().replace(/(^,)|(,$)/g, ''))
@@ -51,7 +50,6 @@ export const fetchNutritionData = async (searchQuery) => {
 
     if (response.status === 200) {
       const data = await response.json();
-      console.log(data)
       return data;
     } else {
       alert('Nothing was found')

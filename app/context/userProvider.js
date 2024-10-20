@@ -6,12 +6,6 @@ import dayjs from 'dayjs';
 const UserContext = createContext();
 // import { getUserByEmail  } from '../utils/userFn'
 
-// import { onCreateExercise, onUpdateExercise, onDeleteExercise } from '../graphql/subscriptions';
-
-// Create the user context
-
-
-// Create the UserContextProvider component
 const UserProvider = ({ children }) => {
   const [myUser, setMyUser] = useState({
     id: '', 
@@ -29,12 +23,12 @@ const UserProvider = ({ children }) => {
   const currentDate = dayjs().format("YYYY-MM-DD") // example '2024-10-18' 
   
  
-  useEffect(() => {
-   console.log("Goals");
-   console.log(currentDate)
-   console.log("currentCaloriesGoal "+currentCaloriesGoal);
-   console.log("current weight Goal "+currentWeightGoal);
-  }, [currentWeightGoal, currentCaloriesGoal]);
+  // useEffect(() => {
+  //  console.log("Goals");
+  //  console.log(currentDate)
+  //  console.log("currentCaloriesGoal "+currentCaloriesGoal);
+  //  console.log("current weight Goal "+currentWeightGoal);
+  // }, [currentWeightGoal, currentCaloriesGoal]);
 
 
   //    useEffect(() => {

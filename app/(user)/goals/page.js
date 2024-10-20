@@ -51,8 +51,6 @@ const Goals = () => {
     }
   };
  
-  useEffect(() => {console.log(currentWeightGoal)}, [goals])
-  useEffect(() => {console.log(currentCaloriesGoal)}, [goals])
   const handleGoalChange = (event, type) => {
     switch (type) {
       case "weight":
