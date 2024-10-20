@@ -34,7 +34,7 @@ function ResetPassword() {
   const resetPassword = async () => {
     try{
       const actionCodeSettings = {
-        url: 'http://localhost:3000/dashboard', // The URL to redirect to after the password reset
+        url: 'https://nat-health-hub.netlify.app/dashboard', // The URL to redirect to after the password reset
         handleCodeInApp: true, // This should be true to handle the action in your app
       };
   
