@@ -38,7 +38,7 @@ const CaloryWidget = ({ currentCaloriesGoal, caloriesToday }) => {
             fontWeight: 500,
           }}
         >
-         "0"
+         0
         </Typography>
       );
     }

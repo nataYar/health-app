@@ -10,7 +10,6 @@ const UserProvider = ({ children }) => {
   const [myUser, setMyUser] = useState({
     id: '', 
     email: '',
-    nickname: '',
     Logs: [],
   });
   const [userLogs, setUserLogs] = useState([])
@@ -23,12 +22,9 @@ const UserProvider = ({ children }) => {
   const currentDate = dayjs().format("YYYY-MM-DD") // example '2024-10-18' 
   
  
-  // useEffect(() => {
-  //  console.log("Goals");
-  //  console.log(currentDate)
-  //  console.log("currentCaloriesGoal "+currentCaloriesGoal);
-  //  console.log("current weight Goal "+currentWeightGoal);
-  // }, [currentWeightGoal, currentCaloriesGoal]);
+  useEffect(() => {
+   console.log(myUser);
+  }, [myUser]);
 
 
   //    useEffect(() => {

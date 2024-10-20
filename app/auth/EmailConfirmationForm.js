@@ -1,14 +1,13 @@
 "use client";
 import { useState, useContext, useEffect } from "react";
 import { UserContext } from "../context/userProvider";
-// import { Auth } from "aws-amplify";
 import { useRouter } from "next/navigation";
 import { Button, Paper, Box, Typography, TextField } from "@mui/material";
 import { createUserFn } from "../utils/userFn";
 import { Hub } from 'aws-amplify';
 import { confirmSignUp } from 'aws-amplify/auth';
 
-function EmailConfirmationForm({ nickname, email }) {
+function EmailConfirmationForm({ email }) {
   const { myUser, updateUser } = useContext(UserContext);
   const router = useRouter();
   const [confirmationCode, setConfirmationCode] = useState("");
@@ -25,7 +24,7 @@ function EmailConfirmationForm({ nickname, email }) {
         confirmationCode: confirmationCode.trim()
       });
       
-      const newUser = await createUserFn(nickname, email); 
+      const newUser = await createUserFn(email); 
 
       listenToAutoSignInEvent(newUser)
     } catch (error) {
@@ -43,7 +42,6 @@ function EmailConfirmationForm({ nickname, email }) {
         
        console.log(user)
         updateUser({
-          nickname: newUser.nickname,
           email: newUser.email,
           id: newUser.id
         });

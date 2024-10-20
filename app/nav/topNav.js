@@ -17,7 +17,7 @@ import SignOutButton from "./signOutButton";
 import GuestButton from "./guestUser";
 
 const TopNav = ({ drawerWidth, handleDrawerToggle }) => {
-  const { myUser, updateUser } = useContext(UserContext);
+  const { myUser } = useContext(UserContext);
   
   const buttonStyles = {
     p: 0,
@@ -33,7 +33,7 @@ const TopNav = ({ drawerWidth, handleDrawerToggle }) => {
   };
 
   const initials = myUser.email ? 
-  myUser.nickname[0].toUpperCase() 
+  myUser.email[0].toUpperCase() 
   // myUser.email
   : <Avatar sx={{ height:"48px", width:"48px"}}/>;
 
@@ -82,7 +82,7 @@ const TopNav = ({ drawerWidth, handleDrawerToggle }) => {
         
 
         <Box sx={{ flexGrow: 0 }}>
-          <Tooltip title={myUser.nickname}>
+          <Tooltip title={myUser.email}>
             <IconButton sx={buttonStyles}>
               <Typography variant="h2" sx={typographyStyles}>
                 {initials}

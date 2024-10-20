@@ -17,7 +17,6 @@ const SignOutButton = ({ text }) => {
         updateUser({
           email: "",
           id: "",
-          nickname: ""
       });
         router.push("/auth") 
       }).catch((error) => {
