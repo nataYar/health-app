@@ -10,7 +10,7 @@ const RouteOnLoad = () => {
   const router = useRouter();
 
   useEffect(() => {
-    if (myUser.id.length > 0) {
+    if (myUser.id != undefined && myUser.id !== '') {
       router.push('/dashboard');
     } 
   }, [myUser]);

@@ -26,7 +26,6 @@ const UserProvider = ({ children }) => {
    console.log(myUser);
   }, [myUser]);
 
-
   //    useEffect(() => {
   //     console.log("Exercises");
   //     console.log(userExercises);
