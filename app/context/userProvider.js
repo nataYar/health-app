@@ -141,11 +141,6 @@ const UserProvider = ({ children }) => {
     lastC ? setCurrentCaloriesGoal(lastC) : null;
   }, [userLogs]);
 
-
-  // keep user Exercises updated
-
-
-
   useEffect(() => {
     const handleResize = () => {
       setScreenWidth(window.innerWidth);

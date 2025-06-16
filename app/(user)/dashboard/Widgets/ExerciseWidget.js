@@ -19,7 +19,7 @@ const ExerciseWidget = ({ exercisesDuration }) => {
         width="100%"
       >
 
-        <Grid2 item display='flex' alignItems="baseline">
+        <Grid2  display='flex' alignItems="baseline">
           <Typography
             sx={{
               fontSize: "2.125rem",
@@ -50,7 +50,7 @@ const ExerciseWidget = ({ exercisesDuration }) => {
             ) : null
           }
         </Grid2>
-        <Grid2 item>
+        <Grid2 >
           <Avatar
             variant="rounded"
             sx={{
@@ -68,7 +68,7 @@ const ExerciseWidget = ({ exercisesDuration }) => {
       </Grid2>
 
       <Grid2 container direction="column">
-        <Grid2 item sx={{ mb: 1.25 }}>
+        <Grid2  sx={{ mb: 1.25 }}>
           <Grid2 container justifyContent="space-between" width="100%">
             <Typography
               variant="body2"
@@ -83,7 +83,7 @@ const ExerciseWidget = ({ exercisesDuration }) => {
             </Typography>
           </Grid2>
         </Grid2>
-        <Grid2 item sx={{ mb: 1.25 }}>
+        <Grid2  sx={{ mb: 1.25 }}>
         <Divider />
           <Typography
             variant="body2"

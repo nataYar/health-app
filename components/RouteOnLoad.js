@@ -3,18 +3,41 @@ import { useContext, useEffect } from "react";
 import { UserContext } from '../app/context/userProvider';
 import { useRouter } from 'next/navigation';
 
+
+import { Button } from "@mui/material";
 const RouteOnLoad = () => {
-  const { myUser } = useContext(UserContext);
+  const { myUser, updateUser } = useContext(UserContext);
   const router = useRouter();
 
   useEffect(() => {
-    // if (myUser !== null) {
+    if (myUser.id.length > 0) {
       router.push('/dashboard');
-    // } 
-  }, []);
+    } 
+  }, [myUser]);
+
+const switchToTestUser = () => {
+    // Simulate a test user login
+    const testUser = {
+      id: process.env.NEXT_PUBLIC_TESTER_ID,
+      email: 'n.yarysheva@gmail.com'
+    };
+    // Simulate setting the user context
+    updateUser(testUser);
+  };
 
   return (
-    <></>
+    <>
+      <Button
+        variant="contained"
+        onClick={switchToTestUser}
+        sx={{ width: "auto", 
+        backgroundColor: "indigo.main",
+        boxShadow:"none",
+        color:"neutral.200"
+        }} >
+        Sign in as Test User
+      </Button>
+    </>
   );
 };
 

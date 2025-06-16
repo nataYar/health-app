@@ -91,10 +91,10 @@ const CaloryWidget = ({ currentCaloriesGoal, caloriesToday }) => {
         alignItems="baseline"
         width="100%"
       >
-        <Grid2 item width="80%">
+        <Grid2  width="80%">
             {getCaloriesText()}
         </Grid2>
-        <Grid2 item>
+        <Grid2 >
           <Avatar
             variant="rounded"
             sx={{
@@ -113,7 +113,7 @@ const CaloryWidget = ({ currentCaloriesGoal, caloriesToday }) => {
       <Divider sx={{ mt: 1.25, width: "100%" }} />
       {currentCaloriesGoal ? (
         <Grid2 container direction="column">
-          <Grid2 item sx={{ mb: 1.25 }}>
+          <Grid2 sx={{ mb: 1.25 }}>
             <Grid2 container justifyContent="space-between" width="100%">
               <Typography
                 variant="body2"
@@ -127,11 +127,11 @@ const CaloryWidget = ({ currentCaloriesGoal, caloriesToday }) => {
               </Typography>
             </Grid2>
           </Grid2>
-          <Grid2 item sx={{ mb: 1.25 }}>
+          <Grid2 sx={{ mb: 1.25 }}>
             <ProgressBar percentage={percentConsumed} />
           </Grid2>
           {myUser.id.length > 0 ? (
-            <Grid2 item sx={{ mb: 1.25 }}>
+            <Grid2 sx={{ mb: 1.25 }}>
               <Typography
                 variant="body2"
                 sx={{

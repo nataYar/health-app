@@ -21,7 +21,7 @@ const WeightWidget = ({ weightData, currentWeightGoal, currentDate }) => {
         alignItems="baseline"
         width="100%"
       >
-        <Grid2 item>
+        <Grid2 >
           <Typography
             sx={{
               fontSize: "2.125rem",
@@ -32,7 +32,7 @@ const WeightWidget = ({ weightData, currentWeightGoal, currentDate }) => {
             {lastWeight}
           </Typography>
         </Grid2>
-        <Grid2 item>
+        <Grid2 >
           <Avatar
             variant="rounded"
             sx={{
@@ -50,7 +50,7 @@ const WeightWidget = ({ weightData, currentWeightGoal, currentDate }) => {
       </Grid2>
 
       <Grid2 container direction="column">
-        <Grid2 item sx={{ mb: 1.25 }}>
+        <Grid2  sx={{ mb: 1.25 }}>
           <Grid2 container justifyContent="space-between" width="100%">
             <Typography
               variant="body2"
@@ -64,7 +64,7 @@ const WeightWidget = ({ weightData, currentWeightGoal, currentDate }) => {
           </Grid2>
         </Grid2>
 
-        <Grid2 item sx={{}}>
+        <Grid2  sx={{}}>
           <Divider />
           <Grid2 container justifyContent="space-between" width="100%">
             
@@ -96,7 +96,7 @@ const WeightWidget = ({ weightData, currentWeightGoal, currentDate }) => {
           </Grid2>
         </Grid2>
 
-        <Grid2 item sx={{ mb: 1.25, }}>
+        <Grid2  sx={{ mb: 1.25, }}>
           {firstWeight > lastWeight ? (
             <Stack direction="row" alignItems="center" p="0">
               <Avatar
